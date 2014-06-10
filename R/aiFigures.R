@@ -1,6 +1,8 @@
-Torn.1803 = read.table("/Users/Battrd/Documents/School&Work/WiscResearch/ancientIce/Sapna/Torn1803.txt", header=TRUE, sep="\t")
+Torn.1803 = read.table("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Data/Torn1803.txt", header=TRUE, sep="\t")
 
-Suwa.Early = read.table("/Users/Battrd/Documents/School&Work/WiscResearch/ancientIce/Sapna/SuwaEarly101.txt", header=TRUE, sep="\t")
+Suwa.Early = read.table("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Data/SuwaEarly101.txt", header=TRUE, sep="\t")
+
+Suwa.Late = read.table("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Data/SuwaLate101.txt", header=TRUE, sep="\t")
 
 
 blah1 <- residuals(lm(iceoff_julian~DJFTornio, data=Torn.1803))
