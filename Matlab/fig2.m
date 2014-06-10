@@ -1,5 +1,5 @@
 
-d = importdata('../torn.allyears.tsv');
+d = importdata('../Data/torn.allyears.tsv');
 
 d.data(:,2) = detrend(d.data(:,2));
 
