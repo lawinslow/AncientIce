@@ -97,7 +97,7 @@ plot(Suwa.Late[(w2use-1):length(Suwa.Late[,2]),c(1,2)], type="l", xlim=range(gYr
 axis(side=4)
 abline(v=1886, lty="dashed", lwd=2)
 mtext("Suwa break-up day", side=4, line=1.5)
-dev.new()
+dev.off()
 
 
 
