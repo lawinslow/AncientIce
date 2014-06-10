@@ -1,6 +1,6 @@
 addpath('wtc');
 
-d = importdata('../Torn1803.txt');
+d = importdata('../Data/Torn.with.drivers.txt');
 
 d.data(:,2:end) = detrend(d.data(:,2:end));
 
