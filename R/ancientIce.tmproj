@@ -3,14 +3,20 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>aiFigures.R</string>
+	<string>rollVar.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
 			<string>aiFigures.R</string>
 			<key>lastUsed</key>
-			<date>2014-05-28T22:10:13Z</date>
+			<date>2014-06-10T21:39:06Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>rollVar.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-10T21:39:06Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -18,7 +24,7 @@
 			<key>filename</key>
 			<string>rollSpec.R</string>
 			<key>lastUsed</key>
-			<date>2014-05-28T22:10:13Z</date>
+			<date>2014-06-10T21:16:59Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -30,49 +36,64 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>8</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>2</integer>
+				<integer>15</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>2</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>10</integer>
-				<key>line</key>
-				<integer>2</integer>
-			</dict>
 		</dict>
 		<key>rollSpec.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>9</integer>
 				<key>line</key>
-				<integer>18</integer>
+				<integer>43</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>4294967295</integer>
+			<integer>43</integer>
+		</dict>
+		<key>rollVar.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>32</integer>
+				<key>line</key>
+				<integer>55</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>54</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>28</integer>
+				<key>line</key>
+				<integer>55</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>33</integer>
+				<key>line</key>
+				<integer>55</integer>
+			</dict>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>rollSpec.R</string>
+		<string>rollVar.R</string>
 		<string>aiFigures.R</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
