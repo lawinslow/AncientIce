@@ -1,5 +1,7 @@
 library(VGAM)
 
+suwa.preds <- c("year2", "enso", "aod", "sunspots")
+tornio.preds <- c("year2", "nao.djfm", "aod", "sunspots") # add air.t.mam
 
 suwa <- read.table("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Data/suwa.tsv", sep="\t", header=TRUE)
 max.suwa <- max(suwa[,"doy"], na.rm=TRUE)
@@ -15,17 +17,16 @@ min.tornio <- min(tornio[,"doy"], na.rm=TRUE)
 tornio[,"year2"] <- 1:nrow(tornio)
 
 
-
+suwa.bp <- 1842
+tornio.bp <- 1886
 
 
 # ========================
 # = Tobit on entire Suwa =
 # ========================
-suwa.preds <- c("year2", "enso", "aod", "sunspots")
 suwa.formula <- as.formula(paste("doy~", paste(suwa.preds, collapse="+"), sep=""))
 suwa.tobit.complete <- complete.cases(suwa[,c("doy",suwa.preds)])
 
-# tobit.suwa <- vglm(doy~year2+air.t.as+sunspots+enso+reff, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)
 tobit.suwa <- vglm(suwa.formula, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)
 tobit.coeff.suwa <- coef(summary(tobit.suwa))
 # p.tobit.suwwa <- 2 * pt(abs(tobit.coeff.suwa[, "z value"]), df.residual(tobit.suwa), lower.tail = FALSE)
@@ -47,25 +48,10 @@ qqnorm(rp.tobit.suwa); qqline(rp.tobit.suwa)
 plot(rp.tobit.suwa, suwa[suwa.tobit.complete,"doy"], main="Observed vs. Pearson Residuals")
 plot(pred.tobit.suwa, suwa[suwa.tobit.complete,"doy"], main="Observed vs. Predicted")
 
-# ========================
-# = Test Fake Breakpoint =
-# ========================
-# fake.means <- c(rep(-200, 50), rep(200, 50))
-# fake.slopes <- cumsum(c(rep(0.5, 50), rep(1, 50)))
-# fake.doy <- rnorm(100, sd=1)+fake.means+fake.slopes
-# Fake <- data.frame("year"=1:100, "doy"=fake.doy, "bp"=(1:100)>=51)
-# f.bp <- (1:100)>=51
-# 
-# summary(vglm(doy~year, tobit(Lower=min(fake.doy), Upper=max(fake.doy)), data=Fake))
-# summary(vglm(doy~year*bp, tobit(Lower=min(fake.doy), Upper=max(fake.doy)), data=Fake))
-# 
-# summary(lm(doy~year*bp, data=Fake))
-# summary(lm(doy~year, data=Fake))
-
 # =========================
 # = Breakpoint with Tobit =
 # =========================
-bp.opts <- seq(1, 562, by=1) #101:500
+bp.opts <- seq(1, 561, by=1) #101:500
 nlls <- rep(NA, length(bp.opts))
 for(i in 1:length(bp.opts)){
 	# t.bp <- bp.opts[i]
@@ -141,6 +127,21 @@ ts2.obs <- suwa.2[st2.com,"doy"]
 ts2.r2 <- cor(ts2.pred, ts2.obs)^2
 
 
+ts1.year <- vglm(doy~year2, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa.1)
+ts1y.pred <- fitted(ts1.year)
+ts1y.int <- coef(ts1.year)[1]
+ts1y.slope <- coef(ts1.year)[3]
+
+ts2.year <- vglm(doy~year2, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa.2)
+ts2y.pred <- fitted(ts2.year)
+ts2y.int <- coef(ts2.year)[1]
+ts2y.slope <- coef(ts2.year)[3]
+
+suwa.y <- rbind(suwa.1, suwa.2)
+suwa.y[,"bp.pred"] <- c(predict(ts1.year, newdata=suwa.1)[,1], predict(ts2.year, newdata=suwa.2)[,1])
+suwa.y[suwa[,"no.ice"]==1L & !is.na(suwa[,"no.ice"]) ,"doy"] <- NA
+
+
 
 
 
@@ -203,6 +204,61 @@ for(i in 1:length(bp.opts)){
 tornio.bp <- tornio[bp.opts[which.max(nlls)],"year"]
 tornio.bp
 
+tornio.bp.i <- tornio[,"year"] < tornio.bp
+tornio.1 <- tornio[tornio.bp.i,]
+tornio.2 <- tornio[!tornio.bp.i,]
+
+tt1.com <- complete.cases(tornio.1[,c("doy",tornio.preds)])
+tt2.com <- complete.cases(tornio.2[,c("doy",tornio.preds)])
+
+
+tt1 <- vglm(tornio.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.1)
+coef(summary(tt1))
+tt1.pred <- fitted(tt1)[,1]
+tt1.obs <- tornio.1[tt1.com,"doy"]
+tt1.r2 <- cor(tt1.pred, tt1.obs)^2
+
+tt2 <- vglm(tornio.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.2)
+coef(summary(tt2))
+tt2.pred <- fitted(tt2)[,1]
+tt2.obs <- tornio.2[tt2.com,"doy"]
+tt2.r2 <- cor(tt2.pred, tt2.obs)^2
+
+
+tt1.year <- vglm(doy~year2, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.1)
+tt1y.pred <- fitted(tt1.year)
+tt1y.int <- coef(tt1.year)[1]
+tt1y.slope <- coef(tt1.year)[3]
+
+# tt2.year <- vglm(doy~year2, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.2)
+# tt2y.pred <- fitted(tt2.year)
+# tt2y.int <- coef(tt2.year)[1]
+# tt2y.slope <- coef(tt2.year)[3]
+
+t1.final.doy <- tail(tornio.1[,"doy"],1)
+delta.t1.t2.doy <-  # the difference between the last doy from torn.1 predictions
+tt2.year <- vglm(I(doy-)~I(year2-max(tornio.1[,"year2"])), tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.2)
+tt2y.pred <- fitted(tt2.year)
+tt2y.int <- coef(tt2.year)[1]
+tt2y.slope <- coef(tt2.year)[3]
+
+tornio[,"year3"] <- tornio[,"year"] - tornio.bp
+tt.year <- vglm(doy ~ year + pmax(I(year-tornio.bp), 0) , tobit(Lower=min.tornio, Upper=max.tornio), data=tornio)
+tty.pred <- fitted(tt.year)
+tty.int <- coef(tt.year)[1]
+tty.slope <- coef(tt.year)[3]
+
+tornio.y <- rbind(tornio.1, tornio.2)
+# tornio.y[,"bp.pred"] <- c(predict(tt1.year, newdata=tornio.1)[,1], predict(tt2.year, newdata=tornio.2)[,1])
+
+tornio.y <- tornio
+tornio.y[,"bp.pred"] <- predict(tt.year, newdata=tornio)[,1]
+
+plot(tornio.y[,"year"], tornio.y[,"doy"], type="l")
+lines(tornio.y[,"year"], tornio.y[,"bp.pred"], col="red")
+
+
+
 # ==============================================
 # = Plot time series and breakpoint likelihood =
 # ==============================================
@@ -214,7 +270,20 @@ abline(v=tornio.bp, lwd=2, lty="dashed")
 
 
 
+# =================================
+# = Breakpoint + Time Series Plot =
+# =================================
+dev.new(width=3.5, height=5)
+par(mfrow=c(2,1), mar=c(2, 2, 0.5, 0.5), mgp=c(1.5, 0.5, 0), tcl=-0.35, ps=9, cex=1)
 
+plot(suwa.y[,"year"], suwa.y[,"doy"], type="l")
+lines(suwa.y[suwa.bp.i,"year"], suwa.y[suwa.bp.i,"bp.pred"], lwd=3, col="yellow")
+lines(suwa.y[!suwa.bp.i,"year"], suwa.y[!suwa.bp.i,"bp.pred"], lwd=3, col="red")
+abline(v=suwa.bp, lty="dashed", lwd=3)
 
+plot(tornio.y[,"year"], tornio.y[,"doy"], type="l")
+lines(tornio.y[tornio.bp.i,"year"], tornio.y[tornio.bp.i,"bp.pred"], lwd=3, col="yellow")
+lines(tornio.y[!tornio.bp.i,"year"], tornio.y[!tornio.bp.i,"bp.pred"], lwd=3, col="red")
+abline(v=tornio.bp, lty="dashed", lwd=3)
 
 
