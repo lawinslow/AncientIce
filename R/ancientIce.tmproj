@@ -3,9 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>rollVar.R</string>
+	<string>aiTobit.R</string>
 	<key>documents</key>
 	<array>
+		<dict>
+			<key>filename</key>
+			<string>aiTobit.R</string>
+			<key>lastUsed</key>
+			<date>2014-07-28T20:35:21Z</date>
+		</dict>
 		<dict>
 			<key>filename</key>
 			<string>aiFigures.R</string>
@@ -16,7 +22,7 @@
 			<key>filename</key>
 			<string>rollVar.R</string>
 			<key>lastUsed</key>
-			<date>2014-07-29T18:29:58Z</date>
+			<date>2014-07-28T20:35:21Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -24,7 +30,7 @@
 			<key>filename</key>
 			<string>rollSpec.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-10T21:16:59Z</date>
+			<date>2014-07-28T17:28:24Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -45,6 +51,20 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>aiTobit.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>80</integer>
+				<key>line</key>
+				<integer>262</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>251</integer>
+		</dict>
 		<key>rollSpec.R</key>
 		<dict>
 			<key>caret</key>
@@ -64,9 +84,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>32</integer>
+				<integer>87</integer>
 				<key>line</key>
-				<integer>55</integer>
+				<integer>4</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
@@ -77,21 +97,22 @@
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>28</integer>
+				<integer>21</integer>
 				<key>line</key>
-				<integer>55</integer>
+				<integer>4</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>33</integer>
+				<integer>87</integer>
 				<key>line</key>
-				<integer>55</integer>
+				<integer>4</integer>
 			</dict>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
+		<string>aiTobit.R</string>
 		<string>rollSpec.R</string>
 		<string>rollVar.R</string>
 		<string>aiFigures.R</string>
