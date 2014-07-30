@@ -4,7 +4,7 @@ function [vyears, vstd, vdiff] = calcVar(years, doy)
 stride = 30;
 
 diffs = vertcat(abs(diff(doy)),0);
-decades = floor(years/stride)*stride;
+decades = floor((1:length(years))/stride)*stride+years(1);
 
 vyears = unique(decades);
 vstd = nan(length(vyears), 1);
@@ -25,6 +25,6 @@ for i=1:length(vyears)
     
 end
 
-vyears = vyears - (stride/2);
+vyears = vyears + (stride/2);
 
 end

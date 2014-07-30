@@ -14,6 +14,8 @@ torn = detrend(d(:,2));
 
 addpath('wtc');
 
+big_range = [1443 2013];
+    
 %%
 cutoff_year = 1850;
 
@@ -79,6 +81,8 @@ set(gcf,'color','white', 'position',[24 54 1239 553]);
 %--- Contour plot wavelet power spectrum
 subleft = 0.05+0.4*(min(xlim)-1443)/(2013-1443);
 subright = 0.4*range(xlim)/(2013-1443);
+subleft = 0.05;
+subright = 0.4;
 subplot('position',[subleft 0.55 subright 0.4])
 
 levels = [0.0625,0.125,0.25,0.5,1,2,4,8,16] ;
@@ -88,7 +92,7 @@ contourf(time,log2(period),log2(power),log2(levels),'linestyle','none');  %*** o
 %xlabel('Year')
 ylabel('Period (years)')
 title('b) Wavelet Power Spectrum')
-set(gca,'XLim',xlim(:))
+set(gca,'XLim',big_range)
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
 	'YTick',log2(Yticks(:)), ...
@@ -117,11 +121,19 @@ set(gca,'YLim',log2([min(period),64]), ...
 	'YTickLabel','')
 set(gca,'XLim',[0,1.25*max(global_ws)])
 
-subplot('position',[0.65 0.55 0.3 0.4])
+
+subleft = 0.65+0.3*(min(xlim)-1443)/(2013-1443);
+subright = 0.3*range(xlim)/(2013-1443);
+subleft = 0.65;
+subright = 0.3;
+
+subplot('position',[subleft 0.55 subright 0.4])
 [vyears, vstd, vdiff] = calcVar(time, data);
 plot(vyears, vstd, 'o-', 'linewidth', 2);
 hold all;
-plot(vyears, vdiff, 'o-', 'linewidth', 2);
+plot(vyears, vdiff, 's-', 'linewidth', 2);
+set(gca,'xlim',big_range);
+ylabel('Variability (Day)');
 legend({'SD', 'Mean-diff'});
 
 %% Suwa
@@ -140,8 +152,6 @@ d = [d{:}];
 
 time = d(:,1);
 suwa = (d(:,4));
-
-
 
 addpath('wtc');
 
@@ -211,6 +221,8 @@ scaleavg_signif_32 = wave_signif(variance,dt,scale,2,lag1,-1,[16,31.9],mother);
 %--- Contour plot wavelet power spectrum
 subleft = 0.05+0.4*(min(xlim)-1443)/(2013-1443);
 subright = 0.4*range(xlim)/(2013-1443);
+subleft = 0.05;
+subright = 0.4;
 subplot('position',[subleft 0.1 subright 0.4])
 
 levels = [0.0625,0.125,0.25,0.5,1,2,4,8,16] ;
@@ -220,7 +232,7 @@ contourf(time,log2(period),log2(power),log2(levels),'linestyle','none');  %*** o
 xlabel('Year')
 ylabel('Period (years)')
 %title('b) Wavelet Power Spectrum')
-set(gca,'XLim',xlim(:))
+set(gca,'XLim',big_range)
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
 	'YTick',log2(Yticks(:)), ...
@@ -249,13 +261,21 @@ set(gca,'YLim',log2([min(period),64]), ...
 	'YTickLabel','')
 set(gca,'XLim',[0,3000])
 
-subplot('position',[0.65 0.1 0.3 0.4])
+
+subleft = 0.65+0.3*(min(xlim)-1443)/(2013-1443);
+subright = 0.3*range(xlim)/(2013-1443);
+subleft = 0.65;
+subright = 0.3;
+
+subplot('position',[subleft 0.1 subright 0.4])
 [vyears, vstd, vdiff] = calcVar(time, suwa);
 plot(vyears, vstd, 'o-', 'linewidth', 2);
 hold all;
-plot(vyears, vdiff, 'o-', 'linewidth', 2);
+plot(vyears, vdiff, 's-', 'linewidth', 2);
+set(gca,'xlim',big_range);
+ylabel('Variability (Day)');
 legend({'SD', 'Mean-diff'});
 
 
 %% export
-export_fig('../Figures/suwa.torn.wave.and.var.tiff','-r300');
+export_fig('../Figures/suwa.torn.wave.and.var.NOSCALE.tiff','-r300');
