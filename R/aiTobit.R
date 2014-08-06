@@ -2,8 +2,7 @@
 
 library(VGAM)
 
-suwa.preds <- c("co2", "enso", "aod", "sunspots")
-suwa.formula <- as.formula(paste("doy~", paste(suwa.preds, collapse="+"), sep=""))
+
 
 tornio.preds <- c("co2", "nao.djfm", "aod", "sunspots") # add air.t.mam
 tornio.formula <- as.formula(paste("doy~", paste(tornio.preds, collapse="+"), sep=""))
@@ -137,47 +136,104 @@ abline(v=tornio.bp, lty="dashed", lwd=1)
 # ===============================================
 # suwa.1 <- suwa[suwa.bp.i,]
 # suwa.2 <- suwa[!suwa.bp.i,]
-suwa.before.i <- suwa[,""] # LEFT OFF HERE, APPARENTLY
+suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1681
+suwa.after.i <- suwa[,"year"] >= 1897 & suwa[,"year"] <= 1997
 
-# st1.com <- complete.cases(suwa.1[,c("doy",suwa.preds)])
-# st2.com <- complete.cases(suwa.2[,c("doy",suwa.preds)])
+suwa.1 <- suwa[suwa.before.i,]
+suwa.2 <- suwa[suwa.after.i,]
+
+suwa.preds <- c("co2", "enso", "aod", "air.t.as", "reff")
+suwa.pred.combn <- list()
+for(i in 1:length(suwa.preds)){
+	suwa.pred.combn <- c(suwa.pred.combn, combn(suwa.preds, i, simplify=FALSE))
+}
 
 # Suwa Tobit before breakpoint
-ts1 <- vglm(suwa.formula, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa.1)
-coef(summary(ts1))
-ts1.pred <- fitted(ts1)[,1]
-ts1.obs <- suwa.1[st1.com,"doy"]
-ts1.r2 <- cor(ts1.pred, ts1.obs)^2
+ts1.minsofar <- 1E12 # starting nll for accumulating minima
+ts2.minsofar <- 1E12 # same, but for later half
+ts1.nlls <- c()
+ts2.nlls <- c()
+for(i in 1:length(suwa.pred.combn)){
+	
+	t.ts1.formula <- as.formula(paste("doy~", paste(suwa.pred.combn[[i]], collapse="+"), sep=""))
+	t.ts1 <- vglm(t.ts1.formula, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa.1)
+	t.ts1.nll <- t.ts1@criterion$loglikelihood
+	ts1.nlls[i] <- t.ts1.nll
+	t.ts1.min <- t.ts1.nll
+	if(t.ts1.min < ts1.minsofar){
+		ts1.minsofar <- t.ts1.min # the nll value of the best model, so far
+		ts1.min <- i # the index of the smallest nll for the model, so far
+		ts1 <- t.ts1
+	}
+	
+	
+	t.ts2.formula <- as.formula(paste("doy~", paste(suwa.pred.combn[[i]], collapse="+"), sep=""))
+	t.ts2 <- vglm(t.ts2.formula, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa.2)
+	t.ts2.nll <- t.ts2@criterion$loglikelihood
+	t.ts2.min <- t.ts2.nll
+	ts2.nlls[i] <- t.ts2.nll
+	if(t.ts2.min < ts2.minsofar){
+		ts2.minsofar <- t.ts2.min # the nll value of the best model, so far
+		ts2.min <- i # the index of the smallest nll for the model, so far
+		ts2 <- t.ts2
+	}
+	
+}
 
-# Suwa Tobit after breakpoint
-ts2 <- vglm(suwa.formula, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa.2)
-coef(summary(ts2))
-ts2.pred <- fitted(ts2)[,1]
-ts2.obs <- suwa.2[st2.com,"doy"]
-ts2.r2 <- cor(ts2.pred, ts2.obs)^2
 
 
-# =================================================
+# ===============================================
 # = Tornio: Run Tobit before and after breakpoint =
-# =================================================
-tornio.1 <- tornio[tornio.bp.i,]
-tornio.2 <- tornio[!tornio.bp.i,]
-# 
-# tt1.com <- complete.cases(tornio.1[,c("doy",tornio.preds)])
-# tt2.com <- complete.cases(tornio.2[,c("doy",tornio.preds)])
+# ===============================================
+# tornio.1 <- tornio[tornio.bp.i,]
+# tornio.2 <- tornio[!tornio.bp.i,]
+tornio.before.i <- tornio[,"year"] >= 1803 & tornio[,"year"] <= 1882
+tornio.after.i <- tornio[,"year"] >= 1921 & tornio[,"year"] <= 2000
 
-# Do regressions for Tornio before and after the Breakpoint
-tt1 <- vglm(tornio.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.1)
-coef(summary(tt1))
-tt1.pred <- fitted(tt1)[,1]
-tt1.obs <- tornio.1[tt1.com,"doy"]
-tt1.r2 <- cor(tt1.pred, tt1.obs)^2
+tornio.1 <- tornio[tornio.before.i,]
+tornio.2 <- tornio[tornio.after.i,]
 
-tt2 <- vglm(tornio.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.2)
-coef(summary(tt2))
-tt2.pred <- fitted(tt2)[,1]
-tt2.obs <- tornio.2[tt2.com,"doy"]
-tt2.r2 <- cor(tt2.pred, tt2.obs)^2
+tornio.preds <- c("air.t.stock", "sunspots", "aod", "nao.djfm", "co2")
+tornio.pred.combn <- list()
+for(i in 1:length(tornio.preds)){
+	tornio.pred.combn <- c(tornio.pred.combn, combn(tornio.preds, i, simplify=FALSE))
+}
+
+# Tornio Tobit before breakpoint
+tt1.minsofar <- 1E12 # starting nll for accumulating minima
+tt2.minsofar <- 1E12 # same, but for later half
+tt1.nlls <- c()
+tt2.nlls <- c()
+for(i in 1:length(tornio.pred.combn)){
+	
+	t.tt1.formula <- as.formula(paste("doy~", paste(tornio.pred.combn[[i]], collapse="+"), sep=""))
+	t.tt1 <- vglm(t.tt1.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.1)
+	t.tt1.nll <- t.tt1@criterion$loglikelihood
+	tt1.nlls[i] <- t.tt1.nll
+	t.tt1.min <- t.tt1.nll
+	if(t.tt1.min < tt1.minsofar){
+		tt1.minsofar <- t.tt1.min # the nll value of the best model, so far
+		tt1.min <- i # the index of the smallest nll for the model, so far
+		tt1 <- t.tt1 # tornio tobit, part 1
+	}
+	
+	
+	t.tt2.formula <- as.formula(paste("doy~", paste(tornio.pred.combn[[i]], collapse="+"), sep=""))
+	t.tt2 <- vglm(t.tt2.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.2)
+	t.tt2.nll <- t.tt2@criterion$loglikelihood
+	t.tt2.min <- t.tt2.nll
+	tt2.nlls[i] <- t.tt2.nll
+	if(t.tt2.min < tt2.minsofar){
+		tt2.minsofar <- t.tt2.min # the nll value of the best model, so far
+		tt2.min <- i # the index of the smallest nll for the model, so far
+		tt2 <- t.tt2 # tornio tobit, part 2
+	}
+	
+}
+
+
+
+
 
 # ===============================================================
 # = Plot time series with breakpoint and residual variance/ R^2 =

@@ -10,7 +10,9 @@
 			<key>filename</key>
 			<string>aiTobit.R</string>
 			<key>lastUsed</key>
-			<date>2014-07-28T20:35:21Z</date>
+			<date>2014-07-30T00:17:52Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -20,11 +22,15 @@
 		</dict>
 		<dict>
 			<key>filename</key>
+			<string>ai.calcBreakpoint.R</string>
+			<key>lastUsed</key>
+			<date>2014-07-30T00:17:52Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
 			<string>rollVar.R</string>
 			<key>lastUsed</key>
 			<date>2014-07-28T20:35:21Z</date>
-			<key>selected</key>
-			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -37,6 +43,20 @@
 	<integer>241</integer>
 	<key>metaData</key>
 	<dict>
+		<key>ai.calcBreakpoint.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>34</integer>
+				<key>line</key>
+				<integer>17</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>aiFigures.R</key>
 		<dict>
 			<key>caret</key>
@@ -56,14 +76,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>80</integer>
+				<integer>29</integer>
 				<key>line</key>
-				<integer>262</integer>
+				<integer>145</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>251</integer>
+			<integer>135</integer>
 		</dict>
 		<key>rollSpec.R</key>
 		<dict>
@@ -113,6 +133,7 @@
 	<key>openDocuments</key>
 	<array>
 		<string>aiTobit.R</string>
+		<string>ai.calcBreakpoint.R</string>
 		<string>rollSpec.R</string>
 		<string>rollVar.R</string>
 		<string>aiFigures.R</string>
