@@ -37,6 +37,7 @@ tornio.bp <- 1807
 # =========================================
 bp.opts <- 10:(nrow(suwa)-10)
 resid.vars <- rep(NA, length(bp.opts))
+s.bp.pb <- txtProgressBar(min=1, max=length(bp.opts), style=3)
 for(i in 1:length(bp.opts)){
 	t.bp <- bp.opts[i]
 	t.bp.year <- suwa[t.bp,"year"]
@@ -55,7 +56,7 @@ for(i in 1:length(bp.opts)){
 	if(min.sofar!=i){
 		min.tobit.suwa.year <- tobit.suwa.year
 	}
-	print(round(i/length(bp.opts),2))
+	setTxtProgressBar(s.bp.pb, i)
 }
 suwa.bp <- suwa[bp.opts[which.min(resid.vars)],"year"]
 suwa.bp
