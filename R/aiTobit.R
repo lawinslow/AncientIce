@@ -25,8 +25,8 @@ tornio[,"year2"] <- 1:nrow(tornio)
 # suwa.bp <- 1842
 # tornio.bp <- 1886
 
-suwa.bp <- 1812
-tornio.bp <- 1807
+# suwa.bp <- 1812
+# tornio.bp <- 1807
 
 
 # =========================
@@ -45,8 +45,8 @@ for(i in 1:length(bp.opts)){
 	t.suwa[,"bp"] <- (1:nrow(t.suwa))>=t.bp
 	
 	# tobit.suwa.year <- vglm(doy~year2*bp, tobit(Lower=min.suwa, Upper=max.suwa), data=t.suwa) # 1807
-	tobit.suwa.year <- vglm(doy ~ year:bp, tobit(Lower=min.suwa, Upper=max.suwa), data=t.suwa) # 1842
-	# tobit.suwa.year <- vglm(doy ~ year + pmax(I(year-t.bp.year), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=t.suwa) # 1807
+	# tobit.suwa.year <- vglm(doy ~ year:bp, tobit(Lower=min.suwa, Upper=max.suwa), data=t.suwa) # 1842
+	tobit.suwa.year <- vglm(doy ~ year + pmax(I(year-t.bp.year), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=t.suwa) # 1812
 	
 	
 	resid.vars[i] <- exp(coef(tobit.suwa.year)[2])
@@ -99,7 +99,7 @@ tornio.bp.i <- tornio[,"year"] < tornio.bp
 # Suwa
 # Calculate slopes in Suwa ice date using a "continuous" segmented regression
 suwa[,"year3"] <- suwa[,"year"] - suwa.bp
-ts.year <- vglm(doy ~ year + pmax(I(year-suwa.bp), 0) , tobit(Lower=min.suwa, Upper=max.suwa), data=suwa) # use for 1807
+ts.year <- vglm(doy ~ year + pmax(I(year-suwa.bp), 0) , tobit(Lower=min.suwa, Upper=max.suwa), data=suwa) # use for 1812
 # ts.year <- vglm(doy ~ year:suwa.bp.i, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa) # use for 1886
 tsy.pred <- fitted(ts.year)
 suwa[,"bp.pred"] <- predict(ts.year, newdata=suwa)[,1]
