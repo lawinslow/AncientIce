@@ -73,7 +73,7 @@ plot(xvals.t, iceTobit.t[,"estimate"], ylim=it.ylim.t, col=c("blue","red"), pch=
 text(labloc.t, y=it.ylim.l.t*1.2, unique(iceTobit.t[,"variable"]), xpd=TRUE)
 axis(side=1, at=labloc.t, labels=FALSE)
 abline(h=0, lty="dotted")
-legend("topright", legend=c("1803 – 1882", "1921 – 2000"), text.col=c("blue", "red"), bty="n", inset=c(-0.02,-0.07))
+legend("topright", legend=c("1803 – 1866", "1937 – 2000"), text.col=c("blue", "red"), bty="n", inset=c(-0.02,-0.07))
 arrows(x0=xvals.t, y0=rep(iceTobit.t[,"estimate"],2), x1=xvals.t, y1=c(ity0.t,ity1.t), length=0.05, col=c("blue","red"), angle=90)
 
 
