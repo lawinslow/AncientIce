@@ -25,6 +25,7 @@ suwa[,"year2"] <- 1:nrow(suwa)
 bp.opts.s <- 10:(nrow(suwa)-10)
 resid.vars <- rep(NA, length(bp.opts.s))
 s.bp.pb <- txtProgressBar(min=1, max=length(bp.opts.s), style=3)
+nll.s <- rep(NA, length(bp.opts.s))
 for(i in 1:length(bp.opts.s)){
 	t.bp <- bp.opts.s[i]
 	t.bp.year <- suwa[t.bp,"year"]
@@ -37,7 +38,7 @@ for(i in 1:length(bp.opts.s)){
 	
 	
 	resid.vars[i] <- exp(coef(tobit.suwa.year)[2])
-	# nlls[i] <- tobit.suwa.year@criterion$loglikelihood
+	nll.s[i] <- tobit.suwa.year@criterion$loglikelihood
 	
 	min.sofar <- which.min(resid.vars)
 	if(min.sofar!=i){
