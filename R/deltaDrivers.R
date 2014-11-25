@@ -3,7 +3,7 @@
 # = Load Libraries =
 # ==================
 library(VGAM)
-
+library(plyr)
 
 # =============
 # = Load Data =
@@ -52,6 +52,9 @@ iceTobit.s[,"estimate"] <- as.numeric(iceTobit.s[,"estimate"])
 iceTobit.s[,"stdE"] <- as.numeric(iceTobit.s[,"stdE"])
 iceTobit.s[,"Z"] <- as.numeric(iceTobit.s[,"Z"])
 
+iceTobit.s <- ddply(iceTobit.s, "variable", getP)
+
+
 
 # ===============================================
 # = Tornio: Run Tobit before and after breakpoint =
@@ -64,7 +67,8 @@ tornio.after.i <- tornio[,"year"] >= 1937 & tornio[,"year"] <= 2000
 tornio.1 <- tornio[tornio.before.i,]
 tornio.2 <- tornio[tornio.after.i,]
 
-tornio.preds <- c("year", "co2", "nao.djfm", "air.t.stock", "aod", "sunspots")
+# tornio.preds <- c("year", "co2", "nao.djfm", "air.t.stock", "aod", "sunspots")
+tornio.preds <- c("year", "co2", "nao.djfm", "air.t.mam", "aod", "sunspots")
 # tornio.preds <- c("co2", "nao.djfm", "aod", "sunspots") # add air.t.mam # this and the following line were copied from the top of the script before reorganizing
 # tornio.formula <- as.formula(paste("doy~", paste(tornio.preds, collapse="+"), sep=""))
 
@@ -94,6 +98,9 @@ iceTobit.t <- rbind(iceTobit.t1, iceTobit.t2)
 iceTobit.t[,"estimate"] <- as.numeric(iceTobit.t[,"estimate"])
 iceTobit.t[,"stdE"] <- as.numeric(iceTobit.t[,"stdE"])
 iceTobit.t[,"Z"] <- as.numeric(iceTobit.t[,"Z"])
+
+
+iceTobit.t <- ddply(iceTobit.t, "variable", getP)
 
 
 
