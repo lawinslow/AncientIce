@@ -18,13 +18,14 @@ tornio[,"year2"] <- 1:nrow(tornio)
 bp.opts.t <- 1:nrow(tornio)
 r2.tornio <- rep(NA, length(bp.opts.t))
 max.sofar <- NA
-for(i in 1:length(bp.opts)){
-	t.bp <- bp.opts.t[i]
+for(i in 1:length(bp.opts.t)){
+	t.bp.t <- bp.opts.t[i]
+	t.bp.year.t <- tornio[t.bp.t,"year"]
 	t.tornio <- tornio
-	t.tornio[,"bp"] <- (1:nrow(t.tornio))>=t.bp
+	t.tornio[,"bp"] <- (1:nrow(t.tornio))>=t.bp.t
 	# tobit.tornio.year <- lm(doy ~ year2:bp, data=t.tornio) # 1886
 	# tobit.tornio.year <- lm(doy ~ year2*bp, data=t.tornio) # 1807
-	tobit.tornio.year <- lm(doy ~ year + pmax(I(year-bp),0), data=t.tornio) # 1807
+	tobit.tornio.year <- lm(doy ~ year + pmax(I(year-t.bp.year.t),0), data=t.tornio) # 1807
 	r2.tornio[i] <- summary(tobit.tornio.year)$r.squared
 	
 	max.sofar <- which.max(r2.tornio)
