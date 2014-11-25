@@ -15,7 +15,8 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/deltaD
 # ===========================
 # = plot tobit coefficients =
 # ===========================
-dev.new(width=3.5, height=5)
+# dev.new(width=3.5, height=5)
+png("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Figures/deltaDrivers.png", width=3.5, height=5, res=150, units="in")
 par(mfrow=c(2,1), mar=c(2.5, 3, 0.5, 0.5), mgp=c(1.5, 0.5, 0), tcl=-0.15, ps=9, cex=1, family="Times")
 
 
@@ -46,6 +47,8 @@ axis(side=1, at=labloc.s, labels=FALSE)
 abline(h=0, lty="dotted")
 legend("topleft", legend=c("1581 – 1681", "1897 – 1997"), text.col=c("blue","red"), bty="n", inset=c(-0.1,-0.065))
 arrows(x0=xvals.s, y0=rep(iceTobit.s[,"estimate"],2), x1=xvals.s, y1=c(ity0.s,ity1.s), length=0.05, col=c("blue","red"), angle=90)
+points(xvals.s, iceTobit.s[,"estimate"], col=c("white"), pch=c(NA, 8)[(iceTobit.s[,"diff.Pval"]<0.05)+1], cex=0.6)
+
 
 
 # =================================
@@ -75,6 +78,7 @@ axis(side=1, at=labloc.t, labels=FALSE)
 abline(h=0, lty="dotted")
 legend("topright", legend=c("1803 – 1866", "1937 – 2000"), text.col=c("blue", "red"), bty="n", inset=c(-0.02,-0.07))
 arrows(x0=xvals.t, y0=rep(iceTobit.t[,"estimate"],2), x1=xvals.t, y1=c(ity0.t,ity1.t), length=0.05, col=c("blue","red"), angle=90)
+points(xvals.t, iceTobit.t[,"estimate"], col=c("white"), pch=c(NA, 8)[(iceTobit.t[,"diff.Pval"]<0.05)+1], cex=0.6)
 
 
-
+dev.off()
