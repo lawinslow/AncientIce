@@ -58,8 +58,8 @@ iceTobit.s[,"Z"] <- as.numeric(iceTobit.s[,"Z"])
 # ===============================================
 # tornio.1 <- tornio[tornio.bp.i,]
 # tornio.2 <- tornio[!tornio.bp.i,]
-tornio.before.i <- tornio[,"year"] >= 1803 & tornio[,"year"] <= 1882
-tornio.after.i <- tornio[,"year"] >= 1921 & tornio[,"year"] <= 2000
+tornio.before.i <- tornio[,"year"] >= 1803 & tornio[,"year"] <= 1866
+tornio.after.i <- tornio[,"year"] >= 1937 & tornio[,"year"] <= 2000
 
 tornio.1 <- tornio[tornio.before.i,]
 tornio.2 <- tornio[tornio.after.i,]
