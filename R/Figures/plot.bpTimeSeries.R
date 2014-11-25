@@ -40,7 +40,8 @@ tornio[,"bp.pred"] <- predict(tt.year, newdata=tornio)[,1]
 # = Plot Time Series Overlain w/ BP Predictions =
 # ===============================================
 # Plot both Suwa and Tornio
-dev.new(width=3.5, height=5)
+# dev.new(width=3.5, height=5)
+png("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Figures/timeSeriesBP.png", width=3.5, height=5, res=150, units="in")
 par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1, family="Times")
 
 plot(suwa.y[,"year"], suwa.y[,"doy"], type="l", xlab="", ylab="Ice Formation Day of Year")
@@ -54,6 +55,8 @@ mtext("Year", side=1, line=1.25)
 lines(tornio[tornio.bp.i,"year"], tornio[tornio.bp.i,"bp.pred"], col="blue", lwd=3)
 lines(tornio[!tornio.bp.i,"year"], tornio[!tornio.bp.i,"bp.pred"], col="red", lwd=3)
 abline(v=tornio.bp, lty="dashed", lwd=1)
+
+dev.off()
 
 
 # =======================================
