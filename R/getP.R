@@ -4,6 +4,7 @@
 # 2 elements in column "period" are "before" or "after" 
 # 2 elements in colmn "estimate" are the regression coefficients from the 2 periods
 # 2 elements in column "stdE" are the standard errors of the regression coefficients
+# Reference : http://stats.stackexchange.com/questions/93540/testing-equality-of-coefficients-from-two-different-regressions
 getP <- function(x){
 	betaBefore <- x[x[,"period"]=="before","estimate"]
 	betaAfter <- x[x[,"period"]=="after","estimate"]
