@@ -32,10 +32,10 @@ png("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Figures/tornio.
 par(mar=c(2.5, 2.5, 0.5, 2.5), mgp=c(1.5, 0.5, 0), tcl=-0.35, ps=9, cex=1)
 plot(tornio[bp.opts.t,"year"], tornio[bp.opts.t,"doy"], type="l", xlab="Year", ylab="Ice Breakup Day of Year")
 par(new=TRUE)
-plot(tornio[bp.opts.t, "year"], r2.tornio, type="l", col="blue", xaxt="n", yaxt="n", xlab="", ylab="", lwd=2.5)
-lines(tornio[bp.opts.t, "year"], r2.tornio, col="white", lwd=1)
+plot(tornio[bp.opts.t, "year"], aic.tornio, type="l", col="blue", xaxt="n", yaxt="n", xlab="", ylab="", lwd=2.5)
+lines(tornio[bp.opts.t, "year"], aic.tornio, col="white", lwd=1)
 axis(side=4)
-mtext(bquote(R^2~~value), side=4, line=1.5)
+mtext(bquote(AIC), side=4, line=1.5)
 abline(v=tornio.bp, lwd=2, lty="dashed")
 dev.off()
 

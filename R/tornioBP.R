@@ -16,7 +16,8 @@ tornio[,"year2"] <- 1:nrow(tornio)
 # = Tornio: Calculate breakpoint with OLS =
 # =========================================
 bp.opts.t <- 1:nrow(tornio)
-r2.tornio <- rep(NA, length(bp.opts.t))
+# r2.tornio <- rep(NA, length(bp.opts.t))
+aic.tornio <- rep(NA, length(bp.opts.t))
 max.sofar <- NA
 for(i in 1:length(bp.opts.t)){
 	t.bp.t <- bp.opts.t[i]
@@ -26,18 +27,22 @@ for(i in 1:length(bp.opts.t)){
 	# tobit.tornio.year <- lm(doy ~ year2:bp, data=t.tornio) # 1886
 	# tobit.tornio.year <- lm(doy ~ year2*bp, data=t.tornio) # 1807
 	tobit.tornio.year <- lm(doy ~ year + pmax(I(year-t.bp.year.t),0), data=t.tornio) # 1807
-	r2.tornio[i] <- summary(tobit.tornio.year)$r.squared
+	# r2.tornio[i] <- summary(tobit.tornio.year)$r.squared
+	aic.tornio[i] <- extractAIC(tobit.tornio.year)[2]
 	
-	max.sofar <- which.max(r2.tornio)
-	if(max.sofar!=i){
-		max.tobit.tornio.year <- tobit.tornio.year
-	}
+	# best.sofar <- which.min(aic.tornio)
+	# if(best.sofar==i){
+	# 	best.tobit.tornio.year <- tobit.tornio.year
+	# }
 }
+
+
+
 
 # =================================
 # = Define Breakpoint and Indices =
 # =================================
-tornio.bp <- tornio[bp.opts.t[which.max(r2.tornio)],"year"]
+tornio.bp <- tornio[bp.opts.t[which.min(aic.tornio)],"year"]
 tornio.bp
 tornio.bp.i <- tornio[,"year"] < tornio.bp # indices in units of year2
 
@@ -45,5 +50,5 @@ tornio.bp.i <- tornio[,"year"] < tornio.bp # indices in units of year2
 # ================
 # = Save Results =
 # ================
-save(tornio.bp, tornio.bp.i, r2.tornio, tornio, min.tornio, max.tornio, bp.opts.t, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
+save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
 
