@@ -41,6 +41,7 @@ tornio.bp.i <- tornio[,"year"] < tornio.bp # indices in units of year2
 bp.opts.t2 <- t(combn(1:nrow(tornio), 2))
 # bp.opts.t2 <- bp.opts.t2[bp.opts.t2[,2]-bp.opts.t2[,1]>=20,]
 aic.tornio2 <- rep(NA, nrow(bp.opts.t2))
+t.bp.pb <- txtProgressBar(min=1, max=nrow(bp.opts.t2), style=3)
 for(i in 1:nrow(bp.opts.t2)){
 # for(i in 1:50){
 	t.bp.t <- bp.opts.t2[i,]
@@ -51,11 +52,11 @@ for(i in 1:nrow(bp.opts.t2)){
 	# t.tornio[,"bp2"] <- (1:nrow(t.tornio))>=t.bp.t[2]
 	tobit.tornio.year <- lm(doy ~ year + pmax(I(year-t.bp.year.t1),0) + pmax(I(year-t.bp.year.t2),0), data=tornio) # 1867
 	aic.tornio2[i] <- extractAIC(tobit.tornio.year)[2]
+	setTxtProgressBar(t.bp.pb, i)
 }
+close(t.bp.pb)
 
 tornio[bp.opts.t2[which.min(aic.tornio2),],"year"]
-
-
 
 
 
