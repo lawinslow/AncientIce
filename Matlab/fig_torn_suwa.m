@@ -4,7 +4,8 @@
 %time = d.data(:,1);
 
 f = fopen('../Data/tornio.tsv');
-header = strsplit(fgetl(f), '\t');
+%header = strsplit(fgetl(f), '\t');
+header = regexp(fgetl(f), '\t', 'split');
 d = textscan(f, '%f%f%f%f%f%f%f%f%f%f', 'Delimiter','\t', 'TreatAsEmpty', 'NA');
 fclose(f);
 
@@ -14,10 +15,8 @@ torn = detrend(d(:,2));
 
 addpath('wtc');
 
-big_range = [1443 2013];
-    
 %%
-cutoff_year = 1850;
+cutoff_year = 1867;
 
 data = torn;
 
@@ -81,8 +80,6 @@ set(gcf,'color','white', 'position',[24 54 1239 553]);
 %--- Contour plot wavelet power spectrum
 subleft = 0.05+0.4*(min(xlim)-1443)/(2013-1443);
 subright = 0.4*range(xlim)/(2013-1443);
-subleft = 0.05;
-subright = 0.4;
 subplot('position',[subleft 0.55 subright 0.4])
 
 levels = [0.0625,0.125,0.25,0.5,1,2,4,8,16] ;
@@ -92,7 +89,7 @@ contourf(time,log2(period),log2(power),log2(levels),'linestyle','none');  %*** o
 %xlabel('Year')
 ylabel('Period (years)')
 title('b) Wavelet Power Spectrum')
-set(gca,'XLim',big_range)
+set(gca,'XLim',xlim(:))
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
 	'YTick',log2(Yticks(:)), ...
@@ -121,19 +118,12 @@ set(gca,'YLim',log2([min(period),64]), ...
 	'YTickLabel','')
 set(gca,'XLim',[0,1.25*max(global_ws)])
 
-
-subleft = 0.65+0.3*(min(xlim)-1443)/(2013-1443);
-subright = 0.3*range(xlim)/(2013-1443);
-subleft = 0.65;
-subright = 0.3;
-
-subplot('position',[subleft 0.55 subright 0.4])
+subplot('position',[0.8 0.55 0.15 0.4]);
 [vyears, vstd, vdiff] = calcVar(time, data);
 plot(vyears, vstd, 'o-', 'linewidth', 2);
 hold all;
-plot(vyears, vdiff, 's-', 'linewidth', 2);
-set(gca,'xlim',big_range);
-ylabel('Variability (Day)');
+plot(vyears, vdiff, 'o-', 'linewidth', 2);
+set(gca, 'XLim',[1700 2010]);
 legend({'SD', 'Mean-diff'});
 
 %% Suwa
@@ -144,7 +134,8 @@ legend({'SD', 'Mean-diff'});
 %time = d.data(:,1);
 
 f = fopen('../Data/suwa.tsv');
-header = strsplit(fgetl(f), '\t');
+%header = strsplit(fgetl(f), '\t');
+header = regexp(fgetl(f), '\t', 'split');
 d = textscan(f, '%f%f%f%f%f%f%f%f%f%f', 'Delimiter','\t', 'TreatAsEmpty', 'NA');
 fclose(f);
 
@@ -153,10 +144,12 @@ d = [d{:}];
 time = d(:,1);
 suwa = (d(:,4));
 
+
+
 addpath('wtc');
 
 %%
-cutoff_year = 1850;
+cutoff_year = 1812;
 
 data = suwa;
 data(isnan(data)) = 41;
@@ -221,8 +214,6 @@ scaleavg_signif_32 = wave_signif(variance,dt,scale,2,lag1,-1,[16,31.9],mother);
 %--- Contour plot wavelet power spectrum
 subleft = 0.05+0.4*(min(xlim)-1443)/(2013-1443);
 subright = 0.4*range(xlim)/(2013-1443);
-subleft = 0.05;
-subright = 0.4;
 subplot('position',[subleft 0.1 subright 0.4])
 
 levels = [0.0625,0.125,0.25,0.5,1,2,4,8,16] ;
@@ -232,7 +223,7 @@ contourf(time,log2(period),log2(power),log2(levels),'linestyle','none');  %*** o
 xlabel('Year')
 ylabel('Period (years)')
 %title('b) Wavelet Power Spectrum')
-set(gca,'XLim',big_range)
+set(gca,'XLim',xlim(:))
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
 	'YTick',log2(Yticks(:)), ...
@@ -261,21 +252,14 @@ set(gca,'YLim',log2([min(period),64]), ...
 	'YTickLabel','')
 set(gca,'XLim',[0,3000])
 
-
-subleft = 0.65+0.3*(min(xlim)-1443)/(2013-1443);
-subright = 0.3*range(xlim)/(2013-1443);
-subleft = 0.65;
-subright = 0.3;
-
-subplot('position',[subleft 0.1 subright 0.4])
+%subplot('position',[0.8 0.55 0.15 0.4]);
+subplot('position',[0.65 0.1 0.297 0.4])
 [vyears, vstd, vdiff] = calcVar(time, suwa);
 plot(vyears, vstd, 'o-', 'linewidth', 2);
 hold all;
-plot(vyears, vdiff, 's-', 'linewidth', 2);
-set(gca,'xlim',big_range);
-ylabel('Variability (Day)');
+plot(vyears, vdiff, 'o-', 'linewidth', 2);
 legend({'SD', 'Mean-diff'});
 
 
 %% export
-export_fig('../Figures/suwa.torn.wave.and.var.NOSCALE.tiff','-r300');
+export_fig('../Figures/suwa.torn.wave.and.var.tiff','-r300');
