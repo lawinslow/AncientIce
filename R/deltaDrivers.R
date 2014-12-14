@@ -1,3 +1,7 @@
+# ===============
+# = Set Options =
+# ===============
+n.boot <- 40
 
 # ==================
 # = Load Libraries =
@@ -10,6 +14,13 @@ library(plyr)
 # =============
 load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
 load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
+
+
+# ==================
+# = Load Functions =
+# ==================
+source("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/bootRes.R")
+source("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/getP.R")
 
 
 # ===============================================
@@ -41,10 +52,26 @@ for(i in 1:length(suwa.preds)){
 	t.ts1.s <- summary(t.ts1)@coef3
 	iceTobit.s1[i,] <- c("suwa", "before", rownames(t.ts1.s)[3], t.ts1.s[3,"Estimate"], t.ts1.s[3,"Std. Error"], t.ts1.s[3,"z value"])
 	
+	# Bootstrap before period
+	x.res.s1 <- as.numeric(residuals(t.ts1)[,1])
+	x.fit.s1 <- as.numeric(fitted(t.ts1))
+	boot.s1 <- bootRes(x.res=x.res.s1, x.fit=x.fit.s1, data0=suwa.1, vars=suwa.preds[i], upper=max.suwa, lower=min.suwa, parallel=TRUE, n.boot=n.boot)
+	# iceTobit.s1[i,4] <- boot.s1[1] # use bootstrap mean
+	iceTobit.s1[i,5] <- boot.s1[2] # use bootstrap "se" (really sd)
+	
 	# do the after period
 	t.ts2 <- vglm(t.ts.formula, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa.2)
 	t.ts2.s <- summary(t.ts2)@coef3
 	iceTobit.s2[i,] <- c("suwa", "after", rownames(t.ts2.s)[3], t.ts2.s[3,"Estimate"], t.ts2.s[3,"Std. Error"], t.ts2.s[3,"z value"])
+	
+	# Bootstrap the after period
+	x.res.s2 <- as.numeric(residuals(t.ts2)[,1])
+	x.fit.s2 <- as.numeric(fitted(t.ts2))
+	boot.s2 <- bootRes(x.res=x.res.s2, x.fit=x.fit.s2, data0=suwa.2, vars=suwa.preds[i], upper=max.suwa, lower=min.suwa, parallel=TRUE, n.boot=n.boot)
+	
+	# iceTobit.s2[i,4] <- boot.s2[1] # use bootstrap mean
+	iceTobit.s2[i,5] <- boot.s2[2] # use bootstrap se/sd
+
 	
 }
 iceTobit.s <- rbind(iceTobit.s1, iceTobit.s2)
@@ -67,11 +94,7 @@ tornio.after.i <- tornio[,"year"] >= 1937 & tornio[,"year"] <= 2000
 tornio.1 <- tornio[tornio.before.i,]
 tornio.2 <- tornio[tornio.after.i,]
 
-# tornio.preds <- c("year", "co2", "nao.djfm", "air.t.stock", "aod", "sunspots")
 tornio.preds <- c("year", "co2", "nao.djfm", "air.t.mam", "aod", "sunspots")
-# tornio.preds <- c("co2", "nao.djfm", "aod", "sunspots") # add air.t.mam # this and the following line were copied from the top of the script before reorganizing
-# tornio.formula <- as.formula(paste("doy~", paste(tornio.preds, collapse="+"), sep=""))
-
 for(i in 1:length(tornio.preds)){
 	tornio.1[,tornio.preds[i]] <- scale(tornio.1[,tornio.preds[i]])
 	tornio.2[,tornio.preds[i]] <- scale(tornio.2[,tornio.preds[i]])
@@ -86,12 +109,23 @@ for(i in 1:length(tornio.preds)){
 	# do the before period
 	t.tt1 <- vglm(t.tt.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.1)
 	t.tt1.s <- summary(t.tt1)@coef3
-	iceTobit.t1[i,] <- c("tornio", "before", rownames(t.tt1.s)[3], t.tt1.s[3,"Estimate"], t.tt1.s[3,"Std. Error"], t.tt1.s[3,"z value"])
+	iceTobit.t1[i,] <- c("tornio", "before", rownames(t.tt1.s)[3], t.tt1.s[3,"Estimate"], t.tt1.s[3,"Std. Error"], t.tt1.s[3,"z value"]) 
+	
+	# Bootstrap the after period
+	x.res.t1 <- as.numeric(residuals(t.tt1)[,1])
+	x.fit.t1 <- as.numeric(fitted(t.tt1 ))
+	boot.t1 <- bootRes(x.res=x.res.t1, x.fit=x.fit.t1, data0=tornio.1, vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=TRUE, n.boot=n.boot)
+	
 	
 	# do the after period
 	t.tt2 <- vglm(t.tt.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.2)
 	t.tt2.s <- summary(t.tt2)@coef3
 	iceTobit.t2[i,] <- c("tornio", "after", rownames(t.tt2.s)[3], t.tt2.s[3,"Estimate"], t.tt2.s[3,"Std. Error"], t.tt2.s[3,"z value"])
+	
+	# Bootstrap the after period
+	x.res.t2 <- as.numeric(residuals(t.tt2)[,1])
+	x.fit.t2 <- as.numeric(fitted(t.tt2))
+	boot.t2 <- bootRes(x.res=x.res.t2, x.fit=x.fit.t2, data0=tornio.2, vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=TRUE, n.boot=n.boot)
 	
 }
 iceTobit.t <- rbind(iceTobit.t1, iceTobit.t2)
