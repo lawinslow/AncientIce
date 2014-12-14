@@ -88,7 +88,7 @@ contourf(time,log2(period),log2(power),log2(levels),'linestyle','none');  %*** o
 %imagesc(time,log2(period),log2(power));  %*** uncomment for 'image' plot
 %xlabel('Year')
 ylabel('Period (years)')
-title('b) Wavelet Power Spectrum')
+
 set(gca,'XLim',xlim(:))
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
@@ -101,7 +101,9 @@ hold on
 % cone-of-influence, anything "below" is dubious
 plot(time,log2(coi),'k')
 plot([cutoff_year cutoff_year], log2([min(scale) max(scale)]), '--w', 'Color', [0.8 0.8 0.8], 'linewidth', 3)
-hold off
+hold off;
+
+gText(gca, 'A', 0.05, 0.95);
 
 %subplot('position',[0.05 0.45 0.4 0.5])
 %--- Plot global wavelet spectrum
@@ -111,12 +113,13 @@ hold on
 plot(global_signif,log2(period),'--', 'color', [0.5 0.5 0.5])
 hold off
 %xlabel('Power (day^2)')
-title('c) Global Wavelet Spectrum')
+
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
 	'YTick',log2(Yticks(:)), ...
 	'YTickLabel','')
 set(gca,'XLim',[0,1.25*max(global_ws)])
+gText(gca, 'B', 0.05, 0.95);
 
 subplot('position',[0.8 0.55 0.15 0.4]);
 [vyears, vstd, vdiff] = calcVar(time, data);
@@ -125,7 +128,7 @@ hold all;
 plot(vyears, vdiff, 'o-', 'linewidth', 2);
 set(gca, 'XLim',[1700 2010]);
 legend({'SD', 'Mean-diff'});
-
+gTextLeft(gca, 'C', 0.05, 0.05);
 %% Suwa
 
 
@@ -222,7 +225,7 @@ contourf(time,log2(period),log2(power),log2(levels),'linestyle','none');  %*** o
 %imagesc(time,log2(period),log2(power));  %*** uncomment for 'image' plot
 xlabel('Year')
 ylabel('Period (years)')
-%title('b) Wavelet Power Spectrum')
+
 set(gca,'XLim',xlim(:))
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
@@ -237,6 +240,8 @@ plot(time,log2(coi),'k')
 plot([cutoff_year cutoff_year], log2([min(scale) max(scale)]), '--w', 'Color', [0.8 0.8 0.8], 'linewidth', 3)
 hold off
 
+gText(gca, 'D', 0.025, 0.95);
+
 %subplot('position',[0.05 0.45 0.4 0.5])
 %--- Plot global wavelet spectrum
 subplot('position',[0.46 0.1 0.15 0.4])
@@ -245,12 +250,13 @@ hold on
 plot(global_signif,log2(period),'--', 'color', [0.5 0.5 0.5])
 hold off
 xlabel('Power (day^2)')
-%title('c) Global Wavelet Spectrum')
+
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
 	'YTick',log2(Yticks(:)), ...
 	'YTickLabel','')
 set(gca,'XLim',[0,3000])
+gText(gca, 'E', 0.05, 0.95);
 
 %subplot('position',[0.8 0.55 0.15 0.4]);
 subplot('position',[0.65 0.1 0.297 0.4])
@@ -259,7 +265,7 @@ plot(vyears, vstd, 'o-', 'linewidth', 2);
 hold all;
 plot(vyears, vdiff, 'o-', 'linewidth', 2);
 legend({'SD', 'Mean-diff'});
-
+gTextLeft(gca, 'F', 0.025, 0.05);
 
 %% export
 export_fig('../Figures/suwa.torn.wave.and.var.tiff','-r300');
