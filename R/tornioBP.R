@@ -8,6 +8,13 @@ max.tornio <- max(tornio[,"doy"], na.rm=TRUE)
 min.tornio <- min(tornio[,"doy"], na.rm=TRUE)
 tornio[,"year2"] <- 1:nrow(tornio)
 
+# ==========================
+# = Tornio BP Alternatives =
+# ==========================
+AIC(lm(doy ~ year, data=t.tornio)) # No BP, just trend AIC = 2155.825
+AIC(lm(doy ~ year + I(year^2), data=t.tornio)) # No BP, just trend AIC = 2154.881
+
+
 
 # ==========
 # = Tornio =
@@ -23,7 +30,7 @@ for(i in 1:length(bp.opts.t)){
 	t.bp.year.t <- tornio[t.bp.t,"year"]
 	t.tornio <- tornio
 	t.tornio[,"bp"] <- (1:nrow(t.tornio))>=t.bp.t
-	tobit.tornio.year <- lm(doy ~ year + pmax(I(year-t.bp.year.t),0), data=t.tornio) # 1867
+	tobit.tornio.year <- lm(doy ~ year + pmax(I(year-t.bp.year.t),0), data=t.tornio) # 1867 (best AIC = 1240.113)
 	aic.tornio[i] <- extractAIC(tobit.tornio.year)[2]
 }
 
@@ -58,11 +65,21 @@ close(t.bp.pb)
 
 tornio[bp.opts.t2[which.min(aic.tornio2),],"year"]
 
+torn.25 <- (bp.opts.t2[,2] - bp.opts.t2[,1]) >= 25
+torn.50 <- (bp.opts.t2[,2] - bp.opts.t2[,1]) >= 50
+torn.100 <- (bp.opts.t2[,2] - bp.opts.t2[,1]) >= 100
+torn.200 <- (bp.opts.t2[,2] - bp.opts.t2[,1]) >= 200
 
+min(aic.tornio2) # best 2-breakpoint model AIC is 1236.805
+min(aic.tornio2[torn.25]) # best 2BP model, where BP's are >= 25 years apart, is 1239.815
+min(aic.tornio2[torn.50]) # best 2BP model, where BP's are >= 50 years apart, is 1239.815
+min(aic.tornio2[torn.100]) # best 2BP model, where BP's are >= 100 years apart, is 1239.815
+
+torn.best.2BP.25.yr <- tornio[bp.opts.t2[torn.25,][which.min(aic.tornio2[torn.25]),],"year"]
 
 
 # ================
 # = Save Results =
 # ================
-save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, aic.tornio2, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
+save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, aic.tornio2,bp.opts.t2, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
 
