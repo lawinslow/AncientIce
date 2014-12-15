@@ -32,7 +32,7 @@ bootRes <- function(x.res, x.fit, data0, vars, n.boot=5, upper=Inf, lower=-Inf, 
 		new.res <- as.numeric(arima.sim(model=aa.mod, n=N, sd=aa.sd))
 	
 		# Add sim res to x.fit
-		new.doy <- pmax(pmin(x.fit+new.res, upper), lower)
+		new.doy <- pmax(pmin(x.fit+new.res, upper), lower) # but create censored DoY's
 	
 		# Fit new tobit
 		new.vglm <- vglm(new.doy~x.reg, tobit(Lower=lower, Upper=upper))
