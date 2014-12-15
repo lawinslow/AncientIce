@@ -143,5 +143,5 @@ suwa.2bp.optim.gen.100 <- genoud(suwa.2bp.nll.100, 2, pop.size=500, max.generati
 # ================
 # = Save Results =
 # ================
-save(suwa.bp, suwa.bp.i, aic.suwa, suwa, max.suwa, min.suwa, bp.opts.s, suwa.2bp.optim.gen.25,suwa.2bp.nll.50, suwa.2bp.nll.100, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
+save(suwa.bp, suwa.bp.i, aic.suwa, suwa, max.suwa, min.suwa, suwa.no.ice, bp.opts.s, suwa.2bp.optim.gen.25,suwa.2bp.nll.50, suwa.2bp.nll.100, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
 
