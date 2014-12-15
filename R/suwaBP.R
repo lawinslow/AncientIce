@@ -134,9 +134,9 @@ suwa.2bp.nll.100 <- function(bps){
 dom <- matrix(c(10,nrow(suwa)-11, 11, nrow(suwa)-10), ncol=2, byrow=TRUE)
 suwa.2bp.optim.gen.25 <- genoud(suwa.2bp.nll.25, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with soft penalty for BP < 25 yrs apart, BP's are 1828 (386) and 1853 (411); AIC = 3510.898
 
-suwa.2bp.optim.gen.50 <- genoud(suwa.2bp.nll.50, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2)
+suwa.2bp.optim.gen.50 <- genoud(suwa.2bp.nll.50, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with 50 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3511.682
 
-suwa.2bp.optim.gen.100 <- genoud(suwa.2bp.nll.100, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2)
+suwa.2bp.optim.gen.100 <- genoud(suwa.2bp.nll.100, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with 100 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3511.682
 
 
 
