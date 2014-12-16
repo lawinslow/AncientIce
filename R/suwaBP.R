@@ -3,7 +3,6 @@
 # = Load Libraries =
 # ==================
 library(VGAM)
-library(DEoptim)
 library(rgenoud)
 
 
@@ -12,7 +11,7 @@ library(rgenoud)
 # =============
 suwa <- read.table("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Data/suwa.tsv", sep="\t", header=TRUE)
 max.suwa <- max(suwa[,"doy"], na.rm=TRUE)
-min.suwa <- min(suwa[,"doy"], na.rm=TRUE)
+min.suwa <- -Inf #min(suwa[,"doy"], na.rm=TRUE)
 suwa.no.ice <- suwa[,"no.ice"]==1L & !is.na(suwa[,"no.ice"])
 suwa[suwa.no.ice ,"doy"] <- max.suwa
 suwa[,"year2"] <- 1:nrow(suwa)
@@ -21,8 +20,8 @@ suwa[,"year2"] <- 1:nrow(suwa)
 # =========================
 # = Breakpoint with Tobit =
 # =========================
-AIC(vglm(doy ~ year, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint AIC = 3536.38
-AIC(vglm(doy ~ year + I(year^2), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint +year^2 AIC = 3515.407
+AIC(vglm(doy ~ year, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint AIC = 3540.767
+AIC(vglm(doy ~ year + I(year^2), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint +year^2 AIC = 3519.85
 
 # =========================================
 # = Suwa: Calculate Breakpoint with Tobit =
@@ -38,7 +37,7 @@ for(i in 1:length(bp.opts.s)){
 	
 	tobit.suwa.year <- vglm(doy ~ year + pmax(I(year-t.bp.year), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa) # 1812
 
-	aic.suwa[i] <- AIC(tobit.suwa.year) # Best AIC w/ 1 BP: 3513.241 (just a little over 2 AIC points better than year + year^2)
+	aic.suwa[i] <- AIC(tobit.suwa.year) # Best AIC w/ 1 BP: 3517.579 (just a little over 2 AIC points better than year + year^2)
 
 	setTxtProgressBar(s.bp.pb, i)
 }
@@ -132,11 +131,11 @@ suwa.2bp.nll.100 <- function(bps){
 
 # suwa.2bp.optim.de <- DEoptim(suwa.2bp.nll, c(10,10), c(nrow(suwa)-10, nrow(suwa)-10), control=DEoptim.control(itermax=5, NP=500))
 dom <- matrix(c(10,nrow(suwa)-11, 11, nrow(suwa)-10), ncol=2, byrow=TRUE)
-suwa.2bp.optim.gen.25 <- genoud(suwa.2bp.nll.25, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with soft penalty for BP < 25 yrs apart, BP's are 1828 (386) and 1853 (411); AIC = 3510.898
+suwa.2bp.optim.gen.25 <- genoud(suwa.2bp.nll.25, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with soft penalty for BP < 25 yrs apart, BP's are 1828 (386) and 1853 (411); AIC = 3515.235
 
-suwa.2bp.optim.gen.50 <- genoud(suwa.2bp.nll.50, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with 50 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3511.682
+suwa.2bp.optim.gen.50 <- genoud(suwa.2bp.nll.50, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with 50 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3516.003
 
-suwa.2bp.optim.gen.100 <- genoud(suwa.2bp.nll.100, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with 100 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3511.682
+suwa.2bp.optim.gen.100 <- genoud(suwa.2bp.nll.100, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with 100 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3516.003
 
 
 
