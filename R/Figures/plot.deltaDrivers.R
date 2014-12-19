@@ -5,6 +5,11 @@
 library(zoo)
 
 
+# ===========
+# = Options =
+# ===========
+se.extend <- qnorm(0.025, lower.tail=FALSE)
+
 
 # =============
 # = Load Data =
@@ -29,8 +34,8 @@ iceTobit.s[,"Z"] <- as.numeric(iceTobit.s[,"Z"])
 
 iceTobit.s <- iceTobit.s[order(iceTobit.s[,"water"], iceTobit.s[,"variable"]),]
 
-ity0.s <- iceTobit.s[,"estimate"]-iceTobit.s[,"stdE"] # y0's for arrows()
-ity1.s <- iceTobit.s[,"estimate"]+iceTobit.s[,"stdE"] # y1's for arrows()
+ity0.s <- iceTobit.s[,"estimate"]-iceTobit.s[,"stdE"]*se.extend # y0's for arrows()
+ity1.s <- iceTobit.s[,"estimate"]+iceTobit.s[,"stdE"]*se.extend # y1's for arrows()
 it.ylim.l.s <- min(ity0.s)
 it.ylim.u.s <- max(ity1.s)
 it.ylim.s <- c(it.ylim.l.s, it.ylim.u.s)
@@ -60,8 +65,8 @@ iceTobit.t[,"Z"] <- as.numeric(iceTobit.t[,"Z"])
 
 iceTobit.t <- iceTobit.t[order(iceTobit.t[,"water"], iceTobit.t[,"variable"]),]
 
-ity0.t <- iceTobit.t[,"estimate"]-iceTobit.t[,"stdE"] # y0's for arrows()
-ity1.t <- iceTobit.t[,"estimate"]+iceTobit.t[,"stdE"] # y1's for arrows()
+ity0.t <- iceTobit.t[,"estimate"]-iceTobit.t[,"stdE"]*se.extend # y0's for arrows()
+ity1.t <- iceTobit.t[,"estimate"]+iceTobit.t[,"stdE"]*se.extend # y1's for arrows()
 it.ylim.l.t <- min(ity0.t)
 it.ylim.u.t <- max(ity1.t)
 it.ylim.t <- c(it.ylim.l.t, it.ylim.u.t)
