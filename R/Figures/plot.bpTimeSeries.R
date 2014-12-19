@@ -23,6 +23,10 @@ tsy.pred <- fitted(ts.year)
 suwa[,"bp.pred"] <- predict(ts.year, newdata=suwa)[,1]
 suwa.y <- suwa
 suwa.y[suwa.no.ice ,"doy"] <- NA
+!suwa.no.ice
+suwa.isolObs.rle <- rle(as.integer(!is.na(suwa.y[,"doy"]) & !suwa.no.ice)) # rle for "isolated" (surrounded by NA) observations
+suwa.isolObs.rleLogic <- suwa.isolObs.rle$lengths==1 & suwa.isolObs.rle$values==1
+suwa.isolObs <- rep(suwa.isolObs.rleLogic, times=suwa.isolObs.rle$lengths)
 
 
 # =========================
@@ -30,10 +34,11 @@ suwa.y[suwa.no.ice ,"doy"] <- NA
 # =========================
 # Calculate slopes in Tornio ice date using a "continuous" segmented regression
 tornio[,"year3"] <- tornio[,"year"] - tornio.bp
-tt.year <- vglm(doy ~ year + pmax(I(year-tornio.bp), 0) , tobit(Lower=min.tornio, Upper=max.tornio), data=tornio) # 1807
+# tt.year <- vglm(doy ~ year + pmax(I(year-tornio.bp), 0) , tobit(Lower=min.tornio, Upper=max.tornio), data=tornio) # 1807
+tt.year <- lm(doy ~ year + pmax(I(year-tornio.bp), 0), data=tornio)
 # tt.year <- vglm(doy ~ year:tornio.bp.i , tobit(Lower=min.tornio, Upper=max.tornio), data=tornio) # 1886
 tty.pred <- fitted(tt.year)
-tornio[,"bp.pred"] <- predict(tt.year, newdata=tornio)[,1]
+tornio[,"bp.pred"] <- as.numeric(predict(tt.year, newdata=tornio))
 
 
 # ===============================================
@@ -54,6 +59,7 @@ lines(suwa.y[suwa.bp.i,"year"], suwa.y[suwa.bp.i,"bp.pred"], col="blue", lwd=3)
 lines(suwa.y[!suwa.bp.i,"year"], suwa.y[!suwa.bp.i,"bp.pred"], col="red", lwd=3)
 abline(v=suwa.bp, lty="dashed", lwd=1)
 points(suwa.y[suwa.no.ice,"year"], rep(max.suwa, sum(suwa.no.ice)), pch=23, bg=sNFcc, col=NA, cex=0.9)
+points(suwa.y[suwa.isolObs,"year"], suwa.y[suwa.isolObs,"doy"], pch=20, cex=0.25) # plot observations that have a missing or no-freeze year on either side of it (thus would not show up as line, b/c line must have at least 2 observations in a row)
 
 
 #
