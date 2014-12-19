@@ -1,3 +1,4 @@
+
 # ===============
 # = Set Options =
 # ===============
@@ -107,27 +108,28 @@ for(i in 1:length(tornio.preds)){
 	t.tt.formula <- as.formula(paste("doy~", paste(tornio.preds[i], collapse="+"), sep=""))
 	
 	# do the before period
-	t.tt1 <- vglm(t.tt.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.1)
-	t.tt1.s <- summary(t.tt1)@coef3
-	iceTobit.t1[i,] <- c("tornio", "before", rownames(t.tt1.s)[3], t.tt1.s[3,"Estimate"], t.tt1.s[3,"Std. Error"], t.tt1.s[3,"z value"]) 
+	t.tt1 <- lm(t.tt.formula, data=tornio.1)
+	t.tt1.s <- summary(t.tt1)$coef
+	iceTobit.t1[i,] <- c("tornio", "before", rownames(t.tt1.s)[2], t.tt1.s[2,"Estimate"], t.tt1.s[2,"Std. Error"], t.tt1.s[2,"t value"]) 
 	
 	# Bootstrap the after period
-	x.res.t1 <- as.numeric(residuals(t.tt1)[,1])
+	x.res.t1 <- as.numeric(residuals(t.tt1))
 	x.fit.t1 <- as.numeric(fitted(t.tt1 ))
-	boot.t1 <- bootRes(x.res=x.res.t1, x.fit=x.fit.t1, data0=tornio.1, vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=TRUE, n.boot=n.boot)
+	boot.t1 <- bootRes(x.res=x.res.t1, x.fit=x.fit.t1, data0=tornio.1, Type="OLS", vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=TRUE, n.boot=n.boot)
 	
 	
 	# do the after period
-	t.tt2 <- vglm(t.tt.formula, tobit(Lower=min.tornio, Upper=max.tornio), data=tornio.2)
-	t.tt2.s <- summary(t.tt2)@coef3
-	iceTobit.t2[i,] <- c("tornio", "after", rownames(t.tt2.s)[3], t.tt2.s[3,"Estimate"], t.tt2.s[3,"Std. Error"], t.tt2.s[3,"z value"])
+	t.tt2 <- lm(t.tt.formula, data=tornio.2)
+	t.tt2.s <- summary(t.tt2)$coef
+	iceTobit.t2[i,] <- c("tornio", "after", rownames(t.tt2.s)[2], t.tt2.s[2,"Estimate"], t.tt2.s[2,"Std. Error"], t.tt2.s[2,"t value"]) 
 	
 	# Bootstrap the after period
-	x.res.t2 <- as.numeric(residuals(t.tt2)[,1])
+	x.res.t2 <- as.numeric(residuals(t.tt2))
 	x.fit.t2 <- as.numeric(fitted(t.tt2))
-	boot.t2 <- bootRes(x.res=x.res.t2, x.fit=x.fit.t2, data0=tornio.2, vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=TRUE, n.boot=n.boot)
+	boot.t2 <- bootRes(x.res=x.res.t2, x.fit=x.fit.t2, data0=tornio.2, Type="OLS", vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=TRUE, n.boot=n.boot)
 	
 }
+
 iceTobit.t <- rbind(iceTobit.t1, iceTobit.t2)
 iceTobit.t[,"estimate"] <- as.numeric(iceTobit.t[,"estimate"])
 iceTobit.t[,"stdE"] <- as.numeric(iceTobit.t[,"stdE"])
@@ -143,6 +145,7 @@ iceTobit.t <- ddply(iceTobit.t, "variable", getP)
 # ===========================
 iceTobit <- rbind(iceTobit.s, iceTobit.t) # combine
 iceTobit <- iceTobit[order(iceTobit[,"water"], iceTobit[,"variable"]),] # order
+
 
 # ================
 # = Save Results =

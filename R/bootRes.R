@@ -1,5 +1,10 @@
 
-bootRes <- function(x.res, x.fit, data0, vars, n.boot=5, upper=Inf, lower=-Inf, parallel=FALSE){
+bootRes <- function(x.res, x.fit, data0, vars, Type=c("Tobit", "OLS"), n.boot=5, upper=Inf, lower=-Inf, parallel=FALSE){
+	
+	Type <- match.arg(Type)
+	
+	require(forecast)
+	
 	if(parallel){
 		library(doParallel)
 		library(foreach)
@@ -27,19 +32,36 @@ bootRes <- function(x.res, x.fit, data0, vars, n.boot=5, upper=Inf, lower=-Inf, 
 	
 	# Function that does 1 iteration of bootstrapping
 	# Notice use of scoping
-	boot.heart <- function(){
-		# Simulate from fit
-		new.res <- as.numeric(arima.sim(model=aa.mod, n=N, sd=aa.sd))
+	if(Type=="Tobit"){
+		boot.heart <- function(){
+			# Simulate from fit
+			new.res <- as.numeric(arima.sim(model=aa.mod, n=N, sd=aa.sd))
 	
-		# Add sim res to x.fit
-		new.doy <- pmax(pmin(x.fit+new.res, upper), lower) # but create censored DoY's
+			# Add sim res to x.fit
+			new.doy <- pmax(pmin(x.fit+new.res, upper), lower) # but create censored DoY's
 	
-		# Fit new tobit
-		new.vglm <- vglm(new.doy~x.reg, tobit(Lower=lower, Upper=upper))
+			# Fit new tobit
+			new.vglm <- vglm(new.doy~x.reg, tobit(Lower=lower, Upper=upper))
 	
-		# return estimate
-		return(summary(new.vglm)@coef3[3,"Estimate"])
+			# return estimate
+			return(summary(new.vglm)@coef3[3,"Estimate"])
+		}
+	}else{
+		boot.heart <- function(){
+			# Simulate from fit
+			new.res <- as.numeric(arima.sim(model=aa.mod, n=N, sd=aa.sd))
+	
+			# Add sim res to x.fit
+			new.doy <- x.fit+new.res
+	
+			# Fit new tobit
+			new.ols <- lm(new.doy~x.reg)
+	
+			# return estimate
+			return(summary(new.ols)$coef[2,"Estimate"])
+		}
 	}
+
 	
 	# Execute Bootstrapping
 	if(parallel){
