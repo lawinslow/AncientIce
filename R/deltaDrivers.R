@@ -147,6 +147,60 @@ iceTobit <- rbind(iceTobit.s, iceTobit.t) # combine
 iceTobit <- iceTobit[order(iceTobit[,"water"], iceTobit[,"variable"]),] # order
 
 
+# ==============================
+# = Control for multiple tests =
+# ==============================
+# Use every method you can think of
+# NOTE: BH refers to Benjamini & Hochberg (1995), and unlike the other corrections, seeks to maintain the false discovery rate
+# From Wikipedia:
+	# The FDR criterion adapts so that the same number of false discoveries (V) will mean different things, depending on the total number of discoveries (R). This contrasts the family wise error rate criterion. For example, if inspecting 100 hypotheses (say, 100 genetic mutations or SNPs for association with some phenotype in some population):
+		# If we make 4 discoveries (R), having 2 of them be false discoveries (V) is often unbearable. Whereas,
+		# If we make 50 discoveries (R), having 2 of them be false discoveries (V) is often bearable.
+	
+	# The FDR criterion is scalable in that the same proportion of false discoveries out of the total number of discoveries (Q), remains sensible for different number of total discoveries (R). For example:
+		# If we make 100 discoveries (R), having 5 of them be false discoveries (q=5%) can be bearable.
+		# Similarly, if we make 1000 discoveries (R), having 50 of them be false discoveries (as before, q=5%) can still be bearable.
+# Thus FDR is about maintaining the same % of false discoveries, whereas  family wise error rate (FWER) is about the same number of false discoveries (FWER is the probability of making a certain number of false discoveries, usually 1).
+# As a result, the BH method is always going to be the least conservative p-value correction
+
+adjP <- function(x, checkDup=TRUE){
+	require(multcomp)
+	
+	# define methods
+	meths <- c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "none")
+	
+	# check duplicates
+	if(checkDup){
+		x0 <- x
+		x <- unique(x)
+	}
+	
+	# create container
+	ps <- matrix(NA, ncol=length(meths), nrow=length(x), dimnames=list(NULL, meths))
+	
+	# perform all corrections
+	for(i in 1:length(meths)){
+		ps[,i] <- p.adjust(x, method=meths[i])
+	}
+	
+	# prepare output
+	if(checkDup){
+		blah <- data.frame(id=x0)
+		blah2 <- merge(data.frame(id=x, ps), blah, all=TRUE, sort=FALSE)
+		blah2[,-1]
+	}else{
+		ps
+	}
+	
+}
+
+# Check Tornio
+cbind(iceTobit.t[-7], adjP(iceTobit.t[,7])) # note that under no form of correction can a pair of tornio coefficients be considered different
+
+# Check Suwa
+cbind(iceTobit.s[-7], adjP(iceTobit.s[,7])) # for all but the most conservative corrections, we retain all 3 pairs of significantly different suwa coefficients after correction
+
+
 # ================
 # = Save Results =
 # ================
