@@ -8,12 +8,19 @@ max.tornio <- max(tornio[,"doy"], na.rm=TRUE)
 min.tornio <- min(tornio[,"doy"], na.rm=TRUE)
 tornio[,"year2"] <- 1:nrow(tornio)
 
+
+# ==================
+# = Load Functions =
+# ==================
+func.location <- "/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/Functions"
+invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
+
+
 # ==========================
 # = Tornio BP Alternatives =
 # ==========================
 AIC(lm(doy ~ year, data=t.tornio)) # No BP, just trend AIC = 2155.825
 AIC(lm(doy ~ year + I(year^2), data=t.tornio)) # No BP, just trend AIC = 2154.881
-
 
 
 # ==========

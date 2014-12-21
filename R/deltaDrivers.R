@@ -4,11 +4,20 @@
 # ===============
 n.boot <- 1E3
 
+
+# ==================
+# = Load Functions =
+# ==================
+func.location <- "/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/Functions"
+invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
+
+
 # ==================
 # = Load Libraries =
 # ==================
 library(VGAM)
 library(plyr)
+
 
 # =============
 # = Load Data =
