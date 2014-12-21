@@ -17,6 +17,13 @@ se.extend <- qnorm(0.025, lower.tail=FALSE)
 load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/deltaDrivers.RData")
 
 
+# ==================
+# = Load Functions =
+# ==================
+func.location <- "/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/Functions"
+invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
+
+
 # ===========================
 # = plot tobit coefficients =
 # ===========================
@@ -33,6 +40,13 @@ iceTobit.s[,"stdE"] <- as.numeric(iceTobit.s[,"stdE"])
 iceTobit.s[,"Z"] <- as.numeric(iceTobit.s[,"Z"])
 
 iceTobit.s <- iceTobit.s[order(iceTobit.s[,"water"], iceTobit.s[,"variable"]),]
+XL.s <- c(
+	"air.t.as"=bquote(Air~~phantom()*degree*C), # august september air temperature (where?)
+	"aod"=bquote(AOD), # aerosol optical depth, where?
+	"co2"=bquote(CO[2]), # where?
+	"enso"=bquote(ENSO), # el niño southern oscillation
+	"year"=bquote(Year) # years elapsed since beginning of time series
+)
 
 ity0.s <- iceTobit.s[,"estimate"]-iceTobit.s[,"stdE"]*se.extend # y0's for arrows()
 ity1.s <- iceTobit.s[,"estimate"]+iceTobit.s[,"stdE"]*se.extend # y1's for arrows()
@@ -47,7 +61,8 @@ xvals.s <- (1:nrow(iceTobit.s))+adj.x.s
 labloc.s <- rollapply(xvals.s, width=2, by=2, mean)
 
 plot(xvals.s, iceTobit.s[,"estimate"], ylim=it.ylim.s, col=c("blue","red"), pch=19, xaxt="n", xlab="", ylab="Suwa\nCoefficient")
-text(labloc.s, y=it.ylim.l.s*1.4, unique(iceTobit.s[,"variable"]), xpd=TRUE)
+# text(labloc.s, y=it.ylim.l.s*1.4, unique(iceTobit.s[,"variable"]), xpd=TRUE)
+text(labloc.s, y=it.ylim.l.s*1.4, parse(text=XL.s), xpd=TRUE)
 axis(side=1, at=labloc.s, labels=FALSE)
 abline(h=0, lty="dotted")
 legend("topleft", legend=c("1581 – 1681", "1897 – 1997"), text.col=c("blue","red"), bty="n", inset=c(-0.1,-0.065))
@@ -65,6 +80,15 @@ iceTobit.t[,"Z"] <- as.numeric(iceTobit.t[,"Z"])
 
 iceTobit.t <- iceTobit.t[order(iceTobit.t[,"water"], iceTobit.t[,"variable"]),]
 
+XL.t <- c(
+	"air.t.mam"=bquote(Air~~phantom()*degree*C), # august september air temperature (where?)
+	"aod"=bquote(AOD), # aerosol optical depth, where?
+	"co2"=bquote(CO[2]), # where?
+	"nao.djfm"=bquote(NAO), # north atlantic oscillation in december january february march
+	"sunspots"=bquote(Sunspots), # number of sunspots
+	"year"=bquote(Year) # years elapsed since beginning of time series
+)
+
 ity0.t <- iceTobit.t[,"estimate"]-iceTobit.t[,"stdE"]*se.extend # y0's for arrows()
 ity1.t <- iceTobit.t[,"estimate"]+iceTobit.t[,"stdE"]*se.extend # y1's for arrows()
 it.ylim.l.t <- min(ity0.t)
@@ -78,7 +102,8 @@ xvals.t <- (1:nrow(iceTobit.t))+adj.x.t
 labloc.t <- rollapply(xvals.t, width=2, by=2, mean)
 
 plot(xvals.t, iceTobit.t[,"estimate"], ylim=it.ylim.t, col=c("blue","red"), pch=19, xaxt="n", xlab="", ylab="Tornio\nCoefficient")
-text(labloc.t, y=it.ylim.l.t*1.2, unique(iceTobit.t[,"variable"]), xpd=TRUE)
+# text(labloc.t, y=it.ylim.l.t*1.2, unique(iceTobit.t[,"variable"]), xpd=TRUE)
+text(labloc.t, y=it.ylim.l.t*1.2, parse(text=XL.t), xpd=TRUE)
 axis(side=1, at=labloc.t, labels=FALSE)
 abline(h=0, lty="dotted")
 legend("topright", legend=c("1803 – 1866", "1937 – 2000"), text.col=c("blue", "red"), bty="n", inset=c(-0.02,-0.07))
