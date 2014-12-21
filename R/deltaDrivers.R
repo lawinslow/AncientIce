@@ -213,7 +213,7 @@ cbind(iceTobit.s[-7], adjP(iceTobit.s[,7])) # for all but the most conservative 
 # ================
 # = Save Results =
 # ================
-save(iceTobit, iceTobit.t, iceTobit.s, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/deltaDrivers.RData")
+save(iceTobit, iceTobit.t, iceTobit.s, tornio.preds, suwa.preds, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/deltaDrivers.RData")
 
 
 # ============================================

@@ -27,8 +27,6 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornio
 load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
 load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/deltaDrivers.RData")
 
-suwa.preds <- c("year", "co2", "enso", "air.t.as", "aod")
-tornio.preds <- c("year", "co2", "nao.djfm", "air.t.mam", "aod", "sunspots")
 
 # ===============================
 # = Plot all driver time series =
