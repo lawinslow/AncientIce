@@ -50,9 +50,9 @@ findBP <- function(x, y, bpOpts=NULL, meth=c("OLS","Tobit"), lower=-Inf, upper=I
 	}
 	
 	
-	# ==========
-	# = OLS BP =
-	# ==========
+	# ===================
+	# = Find Breakpoint =
+	# ===================
 	aic.dat <- rep(NA, length(bp.opts)) # store aic's
 	for(i in 1:length(bp.opts)){
 		t.bp <- bp.opts[i]
@@ -83,7 +83,12 @@ findBP <- function(x, y, bpOpts=NULL, meth=c("OLS","Tobit"), lower=-Inf, upper=I
 	}
 	
 	
+	# ==============================
+	# = Alternatives to 1 BP Model =
+	# ==============================
 	# If full output desired, need to test alternatives
+	
+	# Two Breakpoint Model NLL Function
 	bp2.nll <- function(bps){
 		if(bps[2]<=bps[1]){
 			return(9E9)
@@ -121,15 +126,10 @@ findBP <- function(x, y, bpOpts=NULL, meth=c("OLS","Tobit"), lower=-Inf, upper=I
 		poly2.aic <- AIC(poly2.mod)
 		
 		# Create output matrix
-		out.mat <- matrix(
-			c(
-				lin.aic, NA, NA,
-				poly2.aic, NA, NA,
-				bp1.aic, bp1.1, NA,
-				bp2.aic, bp2.bps[1], bp2.bps[2]
-			),
-			nrow=3, dimnames=list(c("AIC","BP1","BP2"), c("lin","poly","bp1","bp2"))
-		)
+		out.mat <- data.frame(model=c("lin","poly","bp1","bp2"), AIC=rep(NA,4), BP1=rep(NA,4), BP2=rep(NA,4))
+		out.mat[,"AIC"] <- c(lin.aic, poly2.aic, bp1.aic, bp2.aic)
+		out.mat[,"bp1"] <- c(NA, NA, bp1.1, bp2.bps[1])
+		out.mat[,"bp2"] <- c(NA, NA, NA, bp2.bps[2])
 		
 		return(out.mat)
 	}
