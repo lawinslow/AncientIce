@@ -26,13 +26,6 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornio
 load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
 
 
-# ==================
-# = Load Functions =
-# ==================
-source("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/bootRes.R")
-source("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/getP.R")
-
-
 # ===============================================
 # = Suwa: Run Tobit before and after breakpoint =
 # ===============================================
@@ -98,11 +91,12 @@ iceTobit.s <- ddply(iceTobit.s, "variable", getP)
 # ===============================================
 # tornio.1 <- tornio[tornio.bp.i,]
 # tornio.2 <- tornio[!tornio.bp.i,]
-tornio.before.i <- tornio[,"year"] >= 1803 & tornio[,"year"] <= 1866
-tornio.after.i <- tornio[,"year"] >= 1937 & tornio[,"year"] <= 2000
 
-tornio.1 <- tornio[tornio.before.i,]
-tornio.2 <- tornio[tornio.after.i,]
+# tornio.before.i <- tornio[,"year"] >= 1803 & tornio[,"year"] <= 1866
+# tornio.after.i <- tornio[,"year"] >= 1937 & tornio[,"year"] <= 2000
+
+tornio.1 <- tornio[tornio.bp.i,]
+tornio.2 <- tornio[!tornio.bp.i,]
 
 tornio.preds <- c("year", "co2", "nao.djfm", "air.t.mam", "aod", "sunspots")
 for(i in 1:length(tornio.preds)){
@@ -208,6 +202,26 @@ cbind(iceTobit.t[-7], adjP(iceTobit.t[,7])) # note that under no form of correct
 
 # Check Suwa
 cbind(iceTobit.s[-7], adjP(iceTobit.s[,7])) # for all but the most conservative corrections, we retain all 3 pairs of significantly different suwa coefficients after correction
+
+
+
+# =======================================
+# = Paired t-test for before and afters =
+# =======================================
+d <- mean(iceTobit.t[iceTobit.t[,"period"]=="after","estimate"] - iceTobit.t[iceTobit.t[,"period"]=="before","estimate"])
+
+tornio2 <- tornio
+for(i in 1:length(tornio.preds)){
+	tornio2[,tornio.preds[i]] <- scale(tornio2[,tornio.preds[i]])
+}
+# tornio2 <- as.data.frame(scale(tornio))
+summary(lm(doy ~ aod:tornio.bp.i, data=tornio))
+summary(lm(doy ~ aod + aod:tornio.bp.i, data=tornio2))
+summary(lm(doy ~ co2*tornio.bp.i, data=tornio2))
+
+summary(lm(doy ~ (aod+co2) + (aod+co2):tornio.bp.i, data=tornio2))
+
+summary(aov(doy ~ (aod+co2) + (aod+co2):tornio.bp.i, data=tornio2))
 
 
 # ================
