@@ -16,10 +16,13 @@ bootRes <- function(x.res, x.fit, data0, vars, Type=c("Tobit", "OLS"), n.boot=5,
 			registerDoParallel()
 		}
 	}
-
+	
+	data0 <- data0[,c("doy",vars)]
+	data0 <- data0[complete.cases(data0),]
+	
 	# Get a few convenient values
 	N <- length(x.res) # length of time series (not including NA's in response/ predictor ...)
-	x.reg <- data0[!is.na(data0[,"doy"]),vars] # get the predictor values. would be bug if there is an NA in the predictor, b/c only checks for NA's in response. However, if there is a mismatch (NA's in predictor that aren't at the same place as NA's in response), then this would throw an error when going to do the regression b/c the response and predictor would be different lengths.
+	x.reg <- data0[,vars] # get the predictor values.
 	
 	# Identify ARIMA model
 	aa <- auto.arima(x.res, stationary=TRUE) # from forecast package. 
