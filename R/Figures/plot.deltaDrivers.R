@@ -15,7 +15,11 @@ se.extend <- qnorm(0.025, lower.tail=FALSE)
 # = Load Data =
 # =============
 load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/deltaDrivers.RData")
+iceTobit <- iceTobit[iceTobit[,"variable"]!="year",]
+iceTobit.s <- iceTobit.s[iceTobit.s[,"variable"]!="year",]
+iceTobit.t <- iceTobit.t[iceTobit.t[,"variable"]!="year",]
 
+load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
 
 # ==================
 # = Load Functions =
@@ -44,8 +48,7 @@ XL.s <- c(
 	"air.t.as"=bquote(Air~~phantom()*degree*C), # august september air temperature (where?)
 	"aod"=bquote(AOD), # aerosol optical depth, where?
 	"co2"=bquote(CO[2]), # where?
-	"enso"=bquote(ENSO), # el niño southern oscillation
-	"year"=bquote(Year) # years elapsed since beginning of time series
+	"enso"=bquote(ENSO) # el niño southern oscillation
 )
 
 ity0.s <- iceTobit.s[,"estimate"]-iceTobit.s[,"stdE"]*se.extend # y0's for arrows()
@@ -65,7 +68,8 @@ plot(xvals.s, iceTobit.s[,"estimate"], ylim=it.ylim.s, col=c("blue","red"), pch=
 text(labloc.s, y=it.ylim.l.s*1.4, parse(text=XL.s), xpd=TRUE)
 axis(side=1, at=labloc.s, labels=FALSE)
 abline(h=0, lty="dotted")
-legend("topleft", legend=c("1581 – 1681", "1897 – 1997"), text.col=c("blue","red"), bty="n", inset=c(-0.1,-0.065))
+text(1, 11, "A", font=2, cex=1)
+legend("topright", legend=c("1581 – 1681", "1897 – 1997"), text.col=c("blue","red"), bty="n", inset=c(0,-0.065))
 arrows(x0=xvals.s, y0=rep(iceTobit.s[,"estimate"],2), x1=xvals.s, y1=c(ity0.s,ity1.s), length=0.05, col=c("blue","red"), angle=90)
 points(xvals.s, iceTobit.s[,"estimate"], col=c("white"), pch=c(NA, 8)[(iceTobit.s[,"diff.Pval"]<0.05)+1], cex=0.6)
 
@@ -85,8 +89,7 @@ XL.t <- c(
 	"aod"=bquote(AOD), # aerosol optical depth, where?
 	"co2"=bquote(CO[2]), # where?
 	"nao.djfm"=bquote(NAO), # north atlantic oscillation in december january february march
-	"sunspots"=bquote(Sunspots), # number of sunspots
-	"year"=bquote(Year) # years elapsed since beginning of time series
+	"sunspots"=bquote(Sunspots) # number of sunspots
 )
 
 ity0.t <- iceTobit.t[,"estimate"]-iceTobit.t[,"stdE"]*se.extend # y0's for arrows()
@@ -108,7 +111,8 @@ axis(side=1, at=labloc.t, labels=FALSE)
 abline(h=0, lty="dotted")
 tornio.range1 <- paste0(min(tornio[tornio.bp.i,"year"]), " – ", max(tornio[tornio.bp.i,"year"]))
 tornio.range2 <- paste0(min(tornio[!tornio.bp.i,"year"]), " – ", max(tornio[!tornio.bp.i,"year"]))
-legend("topright", legend=c(tornio.range1, tornio.range2), text.col=c("blue", "red"), bty="n", inset=c(-0.02,-0.07))
+text(1, 2.25, "B", font=2)
+legend("topright", legend=c(tornio.range1, tornio.range2), text.col=c("blue", "red"), bty="n", inset=c(0,-0.065))
 # legend("topright", legend=c("1803 – 1866", "1937 – 2000"), text.col=c("blue", "red"), bty="n", inset=c(-0.02,-0.07))
 arrows(x0=xvals.t, y0=rep(iceTobit.t[,"estimate"],2), x1=xvals.t, y1=c(ity0.t,ity1.t), length=0.05, col=c("blue","red"), angle=90)
 points(xvals.t, iceTobit.t[,"estimate"], col=c("white"), pch=c(NA, 8)[(iceTobit.t[,"diff.Pval"]<0.05)+1], cex=0.6)
