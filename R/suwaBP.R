@@ -151,3 +151,14 @@ suwa.2bp.optim.gen.100 <- genoud(suwa.2bp.nll.100, 2, pop.size=500, max.generati
 # ================
 save(suwa.bp, suwa.bp.i, aic.suwa, suwa, max.suwa, min.suwa, suwa.no.ice, bp.opts.s, suwa.2bp.optim.gen.25,suwa.2bp.nll.50, suwa.2bp.nll.100, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
 
+
+# =================================
+# = Manuscript Summary Statistics =
+# =================================
+summary(vglm(doy ~ year + pmax(I(year-suwa.bp), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa))
+# year coeff = 0.0095219 
+# slope in second half = 0.0274956
+
+0.046321*10 # 0.46 days per decade
+
+(0.046321 + 0.140514)*10 # 1.86835 days per decade

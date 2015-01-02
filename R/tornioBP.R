@@ -90,3 +90,17 @@ torn.best.2BP.25.yr <- tornio[bp.opts.t2[torn.25,][which.min(aic.tornio2[torn.25
 # ================
 save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, aic.tornio2,bp.opts.t2, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
 
+
+
+# =========================
+# = Values for Manuscript =
+# =========================
+summary(lm(doy ~ year + pmax(I(year-tornio.bp),0), data=tornio))
+
+(-0.029729)*10 # -0.29729 days per decade
+
+(-0.029729 + -0.036458)*10 # -0.66187 days per decade
+
+
+
+
