@@ -23,6 +23,10 @@ tsy.pred <- fitted(ts.year)
 suwa[,"bp.pred"] <- predict(ts.year, newdata=suwa)[,1]
 suwa.y <- suwa
 suwa.y[suwa.no.ice ,"doy"] <- NA
+!suwa.no.ice
+suwa.isolObs.rle <- rle(as.integer(!is.na(suwa.y[,"doy"]) & !suwa.no.ice)) # rle for "isolated" (surrounded by NA) observations
+suwa.isolObs.rleLogic <- suwa.isolObs.rle$lengths==1 & suwa.isolObs.rle$values==1
+suwa.isolObs <- rep(suwa.isolObs.rleLogic, times=suwa.isolObs.rle$lengths)
 
 
 # =========================
@@ -30,10 +34,11 @@ suwa.y[suwa.no.ice ,"doy"] <- NA
 # =========================
 # Calculate slopes in Tornio ice date using a "continuous" segmented regression
 tornio[,"year3"] <- tornio[,"year"] - tornio.bp
-tt.year <- vglm(doy ~ year + pmax(I(year-tornio.bp), 0) , tobit(Lower=min.tornio, Upper=max.tornio), data=tornio) # 1807
+# tt.year <- vglm(doy ~ year + pmax(I(year-tornio.bp), 0) , tobit(Lower=min.tornio, Upper=max.tornio), data=tornio) # 1807
+tt.year <- lm(doy ~ year + pmax(I(year-tornio.bp), 0), data=tornio)
 # tt.year <- vglm(doy ~ year:tornio.bp.i , tobit(Lower=min.tornio, Upper=max.tornio), data=tornio) # 1886
 tty.pred <- fitted(tt.year)
-tornio[,"bp.pred"] <- predict(tt.year, newdata=tornio)[,1]
+tornio[,"bp.pred"] <- as.numeric(predict(tt.year, newdata=tornio))
 
 
 # ===============================================
@@ -41,6 +46,11 @@ tornio[,"bp.pred"] <- predict(tt.year, newdata=tornio)[,1]
 # ===============================================
 # Plot both Suwa and Tornio
 # dev.new(width=3.5, height=5)
+
+myRed <- rgb(t(col2rgb("red", alpha=TRUE)), alpha=75, maxColorValue=256)
+myBlue <- rgb(t(col2rgb("blue", alpha=TRUE)), alpha=75, maxColorValue=256)
+sNFcc <- c(myBlue,myRed)[(!suwa.bp.i[suwa.no.ice])+1] # suwa No Freeze color code
+
 png("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Figures/timeSeriesBP.png", width=3.5, height=5, res=150, units="in")
 par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1, family="Times")
 
@@ -48,7 +58,20 @@ plot(suwa.y[,"year"], suwa.y[,"doy"], type="l", xlab="", ylab="Ice Formation Day
 lines(suwa.y[suwa.bp.i,"year"], suwa.y[suwa.bp.i,"bp.pred"], col="blue", lwd=3)
 lines(suwa.y[!suwa.bp.i,"year"], suwa.y[!suwa.bp.i,"bp.pred"], col="red", lwd=3)
 abline(v=suwa.bp, lty="dashed", lwd=1)
-points(suwa.y[suwa.no.ice,"year"], rep(max.suwa, sum(suwa.no.ice)), pch="*")
+points(suwa.y[suwa.no.ice,"year"], rep(max.suwa, sum(suwa.no.ice)), pch=23, bg=sNFcc, col=NA, cex=0.9)
+points(suwa.y[suwa.isolObs,"year"], suwa.y[suwa.isolObs,"doy"], pch=20, cex=0.25) # plot observations that have a missing or no-freeze year on either side of it (thus would not show up as line, b/c line must have at least 2 observations in a row)
+
+
+#
+# sy <- suwa.y[,"year"]
+# syr <- range(sy)
+# syD <- density(sy[suwa.no.ice], from=syr[1], to=syr[2], adjust=1)
+# syBPi <- syD$x < suwa.bp
+#
+# par(new=TRUE)
+# plot(syD$x[syBPi], syD$y[syBPi], ylab="", xlab="", xlim=syr, type="l", col=myBlue, ylim=range(stD$y), xaxt="n", yaxt="n", main="")
+# lines(syD$x[!syBPi], syD$y[!syBPi], ylab="", xlab="", col=myRed)
+
 
 plot(tornio[,"year"], tornio[,"doy"], type="l", xlab="", ylab="Ice Breakup Day of Year")
 mtext("Year", side=1, line=1.25)
