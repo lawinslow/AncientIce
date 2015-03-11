@@ -1,4 +1,4 @@
-function gTextLeft(ax,T,rightPadFrac,topPadFrac,edgecolor,fontsize)
+function gTextLeft(ax,T,rightPadFrac,topPadFrac,edgecolor,fontsize, fontweight)
 %GTEXT Adds the supplied text to the upper-right corner in the given axes
 
 padFrac = 0.02;
@@ -6,8 +6,10 @@ padFrac = 0.02;
 if(nargin == 4)
     edgecolor = 'k';
     fontsize = 12;
+    fontweight = 'normal';
 elseif(nargin == 5)
     fontsize = 12;
+    fontweight='normal'
 end
 
 xlim = get(ax,'xlim');

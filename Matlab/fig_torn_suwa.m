@@ -1,4 +1,11 @@
 
+bumpleft = -0.6;
+bumpright = 0.35;
+set(0, 'DefaultAxesFontName', 'Times New Roman')
+set(0,'DefaultTextFontname', 'Times New Roman')
+
+%%
+
 %d = importdata('../Data/Other/SuwaEarly101.txt');
 %suwa = detrend(d.data(:,3));
 %time = d.data(:,1);
@@ -80,13 +87,13 @@ set(gcf,'color','white', 'position',[24 54 1239 553]);
 %--- Contour plot wavelet power spectrum
 subleft = 0.05+0.4*(min(xlim)-1443)/(2013-1443);
 subright = 0.4*range(xlim)/(2013-1443);
-subplot('position',[subleft 0.55 subright 0.4])
+subplot('position',[subleft+bumpright 0.1 subright 0.4])
 
 levels = [0.0625,0.125,0.25,0.5,1,2,4,8,16] ;
 Yticks = 2.^(fix(log2(min(period))):fix(log2(max(period))));
 contourf(time,log2(period),log2(power),log2(levels),'linestyle','none');  %*** or use 'contourfill'
 %imagesc(time,log2(period),log2(power));  %*** uncomment for 'image' plot
-%xlabel('Year')
+xlabel('Year')
 ylabel('Period (years)')
 
 set(gca,'XLim',xlim(:))
@@ -100,35 +107,40 @@ contour(time,log2(period),sig95,[-99,1],'k', 'linewidth', 2);
 hold on
 % cone-of-influence, anything "below" is dubious
 plot(time,log2(coi),'k')
-plot([cutoff_year cutoff_year], log2([min(scale) max(scale)]), '--w', 'Color', [0.8 0.8 0.8], 'linewidth', 3)
+plot([cutoff_year cutoff_year], log2([min(scale) max(scale)]), '-', 'Color', 'black', 'linewidth', 3)
+plot([cutoff_year cutoff_year], log2([min(scale) max(scale)]), '-', 'Color', 'white', 'linewidth', 1.5)
 hold off;
 
-gText(gca, 'A', 0.05, 0.95);
+gTextBold(gca, 'D', 0.05, 0.95);
 
 %subplot('position',[0.05 0.45 0.4 0.5])
 %--- Plot global wavelet spectrum
-subplot('position',[0.46 0.55 0.15 0.4])
+subplot('position',[0.46+bumpright 0.1 0.15 0.4])
 plot(global_ws,log2(period), 'k', 'linewidth', 2)
 hold on
 plot(global_signif,log2(period),'--', 'color', [0.5 0.5 0.5])
 hold off
-%xlabel('Power (day^2)')
+xlabel('Power (day^2)')
 
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
 	'YTick',log2(Yticks(:)), ...
 	'YTickLabel','')
 set(gca,'XLim',[0,1.25*max(global_ws)])
-gText(gca, 'B', 0.05, 0.95);
+gTextBold(gca, 'F', 0.05, 0.95,'none');
 
-subplot('position',[0.8 0.55 0.15 0.4]);
+
+
+subplot('position',[0.8+bumpleft 0.1 0.15 0.4]);
 [vyears, vstd, vdiff] = calcVar(time, data);
 plot(vyears, vstd, 'o-', 'linewidth', 2);
 hold all;
 plot(vyears, vdiff, 'o-', 'linewidth', 2);
 set(gca, 'XLim',[1700 2010]);
+ylabel('Variability (days)');
+xlabel('Year')
 legend({'SD', 'Mean-diff'});
-gTextLeft(gca, 'C', 0.05, 0.05);
+gTextLeftBold(gca, 'B', 0.05, 0.05, 'none');
 %% Suwa
 
 
@@ -217,13 +229,13 @@ scaleavg_signif_32 = wave_signif(variance,dt,scale,2,lag1,-1,[16,31.9],mother);
 %--- Contour plot wavelet power spectrum
 subleft = 0.05+0.4*(min(xlim)-1443)/(2013-1443);
 subright = 0.4*range(xlim)/(2013-1443);
-subplot('position',[subleft 0.1 subright 0.4])
+subplot('position',[subleft+bumpright 0.55 subright 0.4])
 
 levels = [0.0625,0.125,0.25,0.5,1,2,4,8,16] ;
 Yticks = 2.^(fix(log2(min(period))):fix(log2(max(period))));
 contourf(time,log2(period),log2(power),log2(levels),'linestyle','none');  %*** or use 'contourfill'
 %imagesc(time,log2(period),log2(power));  %*** uncomment for 'image' plot
-xlabel('Year')
+%xlabel('Year')
 ylabel('Period (years)')
 
 set(gca,'XLim',xlim(:))
@@ -237,35 +249,40 @@ contour(time,log2(period),sig95,[-99,1],'k', 'linewidth', 2);
 hold on
 % cone-of-influence, anything "below" is dubious
 plot(time,log2(coi),'k')
-plot([cutoff_year cutoff_year], log2([min(scale) max(scale)]), '--w', 'Color', [0.8 0.8 0.8], 'linewidth', 3)
+plot([cutoff_year cutoff_year], log2([min(scale) max(scale)]), '-', 'Color', 'black', 'linewidth', 3)
+plot([cutoff_year cutoff_year], log2([min(scale) max(scale)]), '-', 'Color', 'white', 'linewidth', 1.5)
 hold off
 
-gText(gca, 'D', 0.025, 0.95);
+gTextBold(gca, 'C', 0.025, 0.95);
 
 %subplot('position',[0.05 0.45 0.4 0.5])
 %--- Plot global wavelet spectrum
-subplot('position',[0.46 0.1 0.15 0.4])
+subplot('position',[0.46+bumpright 0.55 0.15 0.4])
+
 plot(global_ws,log2(period), 'k', 'linewidth', 2)
 hold on
 plot(global_signif,log2(period),'--', 'color', [0.5 0.5 0.5])
 hold off
-xlabel('Power (day^2)')
+%xlabel('Power (day^2)')
 
 set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
 	'YTick',log2(Yticks(:)), ...
 	'YTickLabel','')
 set(gca,'XLim',[0,3000])
-gText(gca, 'E', 0.05, 0.95);
+gTextBold(gca, 'E', 0.05, 0.95, 'none');
 
 %subplot('position',[0.8 0.55 0.15 0.4]);
-subplot('position',[0.65 0.1 0.297 0.4])
+subplot('position',[0.65+bumpleft 0.55 0.297 0.4]);
+
 [vyears, vstd, vdiff] = calcVar(time, suwa);
 plot(vyears, vstd, 'o-', 'linewidth', 2);
 hold all;
 plot(vyears, vdiff, 'o-', 'linewidth', 2);
+ylabel('Variability (days)');
 legend({'SD', 'Mean-diff'});
-gTextLeft(gca, 'F', 0.025, 0.05);
+
+gTextLeftBold(gca, 'A', 0.025, 0.05, 'none');
 
 %% export
 export_fig('../Figures/suwa.torn.wave.and.var.tiff','-r300');
