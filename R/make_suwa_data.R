@@ -8,9 +8,8 @@ setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
 # = Read in New Data Set =
 # ========================
 ice.new <- read.table("./AncientIce/lib/ice_data_prep/data/suwa_prepared_analysis_data.csv", sep=",", header=TRUE) # read in new ice data from Luke
-suwa.index <- ice.new[,"lakename"]=="LAKE SUWA" # index of rows in new data that belong to suwa
 suwa.index.newCols <- c("rule_year","froze","iceon_year","iceon_month","iceon_day") # columns that we need from the new data to reconstruct the old data; i think we only need rule_year (matches to year), froze (can be converted to no.ice), and iceon_year+iceon_month+iceon_day (can be converted to doy)
-suwa.new0 <- ice.new[suwa.index,suwa.index.newCols] # subset luke's ice data to just suwa, with columns relevant to Ancient Ice analysis
+suwa.new0 <- ice.new[,suwa.index.newCols] # subset luke's ice data to just suwa, with columns relevant to Ancient Ice analysis
 
 
 # =========================
@@ -54,6 +53,9 @@ suwa0[,"doy"] - suwa0[,"doy.new"] # matches; but note the -1 issue in the line w
 suwa0[,"no.ice"] - (as.numeric(suwa0[,"froze"])-1)
 
 sum(suwa0[,"no.ice"], na.rm=TRUE) # previously we'd documented 37 of the years as years that didn't freeze
-sum((as.numeric(suwa0[,"froze"])-1), na.rm=TRUE) # but now we only have 33 years that didn't freeze
+sum((as.numeric(suwa0[,"froze"])-1), na.rm=TRUE) # now we have 37 years that didn't freeze
 
+# checking NA's between froze and no.ice
+sum(is.na(suwa0[,"froze"]))
+sum(is.na(suwa0[,"no.ice"]))
 
