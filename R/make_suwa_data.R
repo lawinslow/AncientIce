@@ -22,12 +22,18 @@ ice.new$no.ice <- NA
 ice.new$no.ice[ice.new$froze == 'Y'] <- 0
 ice.new$no.ice[ice.new$froze == 'N'] <- 1
 
-suwa.old <- read.table("./AncientIce/Data/suwa.tsv", sep="\t", header=TRUE)
+suwa.old <- read.table("./AncientIce/Data/suwa.old.tsv", sep="\t", header=TRUE)
 
 
 suwa.new <- ice.new[, c('rule_year', 'no.ice', 'doy')]
 names(suwa.new) <- c('year', 'no.ice', 'doy')
 
 suwa.new <- merge(suwa.new, suwa.old[,c('year', 'enso', 'co2', 'sunspots', 'air.t.as', 'aod', 'reff')], all=TRUE)
+
+
+# ===============
+# = Save Output =
+# ===============
+write.table(suwa.new, file="./AncientIce/Data/suwa.tsv", sep="\t", row.names=FALSE)
 
 
