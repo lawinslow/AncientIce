@@ -1,5 +1,5 @@
 
-library(dplyr)
+
 # ==========
 # = Set WD =
 # ==========
@@ -8,12 +8,13 @@ library(dplyr)
 #ice.new <- read.table("./AncientIce/lib/ice_data_prep/data/suwa_prepared_analysis_data.csv", sep=",", header=TRUE)
 
 #pull from web (could change this to pull from submodule, but I always have trouble with them)
-ice.new = read.csv('http://raw.githubusercontent.com/lawinslow/ice_data_prep/master/data/suwa_prepared_analysis_data.csv', header=TRUE, as.is=TRUE)
+ice.new = read.csv('lib/ice_data_prep/data/suwa_prepared_analysis_data.csv', header=TRUE, as.is=TRUE)
+
 
 #subtract our iceon date from Jan 0 of that year
 ice.new$doy = as.numeric(
 	as.Date(ISOdate(ice.new$iceon_year, ice.new$iceon_month, ice.new$iceon_day)) - 
-	as.Date(ISOdate(ice.new$rule_year+1, 1, 1, hour=0))
+	as.Date(ISOdate(ice.new$rule_year+1, 1, 1, hour=0)-1) #the minus 1 makes it Jan 0
 	, units='days')
 
 
@@ -24,8 +25,9 @@ ice.new$no.ice[ice.new$froze == 'N'] = 1
 suwa.old <- read.table("Data/suwa.tsv", sep="\t", header=TRUE)
 
 
-suwa.new = select(ice.new, year=rule_year, no.ice, doy)
+suwa.new = ice.new[, c('rule_year', 'no.ice', 'doy')]
+names(suwa.new) = c('year', 'no.ice', 'doy')
 
-suwa.new = merge(suwa.new, suwa.old[,c('year', 'enso', 'co2', 'sunspots', 'air.t.as', 'aod', 'reff')])
+suwa.new = merge(suwa.new, suwa.old[,c('year', 'enso', 'co2', 'sunspots', 'air.t.as', 'aod', 'reff')], all=TRUE)
 
 
