@@ -1,4 +1,9 @@
 
+# ==========
+# = Set WD =
+# ==========
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+
 
 # ===============
 # = Set Options =
@@ -9,7 +14,7 @@ n.boot <- 1E3
 # ==================
 # = Load Functions =
 # ==================
-func.location <- "/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/Functions"
+func.location <- "./AncientIce/R/Functions"
 invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
 
 
@@ -23,9 +28,9 @@ library(plyr)
 # =============
 # = Load Data =
 # =============
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/deltaDrivers.RData")
+load("./AncientIce/Results/tornioBP.RData")
+load("./AncientIce/Results/suwaBP.RData")
+load("./AncientIce/Results/deltaDrivers.RData")
 
 
 # ===============================

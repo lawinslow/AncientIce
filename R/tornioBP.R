@@ -1,9 +1,12 @@
-
+# ==========
+# = Set WD =
+# ==========
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
 
 # =============
 # = Load Data =
 # =============
-tornio <- read.table("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Data/tornio.tsv", sep="\t", header=TRUE)
+tornio <- read.table("./AncientIce/Data/tornio.tsv", sep="\t", header=TRUE)
 max.tornio <- max(tornio[,"doy"], na.rm=TRUE)
 min.tornio <- min(tornio[,"doy"], na.rm=TRUE)
 tornio[,"year2"] <- 1:nrow(tornio)
@@ -12,7 +15,7 @@ tornio[,"year2"] <- 1:nrow(tornio)
 # ==================
 # = Load Functions =
 # ==================
-func.location <- "/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/Functions"
+func.location <- "./AncientIce/R/Functions"
 invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
 
 
@@ -88,7 +91,7 @@ torn.best.2BP.25.yr <- tornio[bp.opts.t2[torn.25,][which.min(aic.tornio2[torn.25
 # ================
 # = Save Results =
 # ================
-save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, aic.tornio2,bp.opts.t2, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
+save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, aic.tornio2,bp.opts.t2, file="./AncientIce/Results/tornioBP.RData")
 
 
 
