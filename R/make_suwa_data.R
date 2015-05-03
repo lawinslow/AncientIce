@@ -1,61 +1,33 @@
 
+
 # ==========
 # = Set WD =
 # ==========
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+#argh absolute paths
+#setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+#ice.new <- read.table("./AncientIce/lib/ice_data_prep/data/suwa_prepared_analysis_data.csv", sep=",", header=TRUE)
 
-# ========================
-# = Read in New Data Set =
-# ========================
-ice.new <- read.table("./AncientIce/lib/ice_data_prep/data/suwa_prepared_analysis_data.csv", sep=",", header=TRUE) # read in new ice data from Luke
-suwa.index.newCols <- c("rule_year","froze","iceon_year","iceon_month","iceon_day") # columns that we need from the new data to reconstruct the old data; i think we only need rule_year (matches to year), froze (can be converted to no.ice), and iceon_year+iceon_month+iceon_day (can be converted to doy)
-suwa.new0 <- ice.new[,suwa.index.newCols] # subset luke's ice data to just suwa, with columns relevant to Ancient Ice analysis
+#pull from web (could change this to pull from submodule, but I always have trouble with them)
+ice.new = read.csv('lib/ice_data_prep/data/suwa_prepared_analysis_data.csv', header=TRUE, as.is=TRUE)
 
 
-# =========================
-# = Format New Data Dates =
-# =========================
-# First, create POSIX date system
-suwa.new0[,"date"] <- mapply(paste, suwa.new0[,c("iceon_year")], suwa.new0[,c("iceon_month")], suwa.new0[,c("iceon_day")])
-suwa.new0[suwa.new0[,"froze"]=="N","date"] <- NA_character_
-suwa.new0[,"date"] <- as.POSIXct(suwa.new0[,"date"], format="%Y %m %d", tz="GMT")
-
-# suwa.new0[,"doy.new"] <- format.Date(suwa.new0[,"date"], format="%j")
-
-# Define "day of year" with reference to the rule year (ice on days from years before rule year should be negative)
-new.doy <- difftime(suwa.new0[,"date"], as.POSIXct(paste0(suwa.new0[,"rule_year"],"-12-31"), tz="GMT"), units="days") # this result is confusing, because it is the old suwa doy - 1 ... does this mean that we were previously using doy+1 instead of doy? it's mostly important to be consistent with the definitions in the text, and shouldn't matter much to the analysis. I'll do +1 for now, but that doesn't seem right to me
-
-new.doy.matchOld <- as.numeric(new.doy) - 1
-
-suwa.new0[,"doy.new"] <- new.doy.matchOld
-
-# change the "froze" column to factor which, when converted to numeric, will be equal to no.ice
-suwa.new0[,"froze"] <- factor(suwa.new0[,"froze"], levels=c("Y","N"))
+#subtract our iceon date from Jan 0 of that year
+ice.new$doy = as.numeric(
+	as.Date(ISOdate(ice.new$iceon_year, ice.new$iceon_month, ice.new$iceon_day)) - 
+	as.Date(ISOdate(ice.new$rule_year+1, 1, 1, hour=0)-1) #the minus 1 makes it Jan 0
+	, units='days')
 
 
-# =================================================
-# = Create a data set that can be merged with old =
-# =================================================
-# trim to useful columns
-suwa.new <- suwa.new0[,c("rule_year", "froze", "doy.new")]
-names(suwa.new)[1] <- c("year") # rename to year for merge
+ice.new$no.ice = NA
+ice.new$no.ice[ice.new$froze == 'Y'] = 0
+ice.new$no.ice[ice.new$froze == 'N'] = 1
 
-# read in old data set
-suwa.old <- read.table("./AncientIce/Data/suwa.tsv", sep="\t", header=TRUE)
+suwa.old <- read.table("Data/suwa.tsv", sep="\t", header=TRUE)
 
-# merge
-suwa0 <- merge(suwa.old, suwa.new, all=TRUE, by="year")
 
-# check for similarity in doy in merge
-suwa0[,"doy"] - suwa0[,"doy.new"] # matches; but note the -1 issue in the line where I created new.doy
+suwa.new = ice.new[, c('rule_year', 'no.ice', 'doy')]
+names(suwa.new) = c('year', 'no.ice', 'doy')
 
-# check for similar in no.ice/froze merge
-suwa0[,"no.ice"] - (as.numeric(suwa0[,"froze"])-1)
+suwa.new = merge(suwa.new, suwa.old[,c('year', 'enso', 'co2', 'sunspots', 'air.t.as', 'aod', 'reff')], all=TRUE)
 
-sum(suwa0[,"no.ice"], na.rm=TRUE) # previously we'd documented 37 of the years as years that didn't freeze
-sum((as.numeric(suwa0[,"froze"])-1), na.rm=TRUE) # now we have 37 years that didn't freeze
-
-# checking NA's between froze and no.ice
-sum(is.na(suwa0[,"froze"]))
-sum(is.na(suwa0[,"no.ice"]))
 
