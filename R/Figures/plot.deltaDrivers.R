@@ -119,7 +119,7 @@ adj.x.t <- cumsum(adj.x0.t*2)
 xvals.t <- (1:nrow(iceTobit.t))+adj.x.t
 labloc.t <- rollapply(xvals.t, width=2, by=2, mean)
 
-plot(xvals.t, iceTobit.t[,"estimate"], ylim=it.ylim.t, col=c("blue","red"), pch=19, xaxt="n", xlab="", ylab="Tornio\nCoefficient")
+plot(xvals.t, iceTobit.t[,"estimate"], ylim=it.ylim.t, col=c("blue","red"), pch=19, xaxt="n", xlab="", ylab="Torne\nCoefficient")
 # text(labloc.t, y=it.ylim.l.t*1.2, unique(iceTobit.t[,"variable"]), xpd=TRUE)
 text(labloc.t, y=it.ylim.l.t*1.125, parse(text=XL.t), xpd=TRUE)
 axis(side=1, at=labloc.t, labels=FALSE)
