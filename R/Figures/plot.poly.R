@@ -77,6 +77,7 @@ points(suwa.y[suwa.isolObs,"year"], suwa.y[suwa.isolObs,"doy"], pch=20, cex=0.25
 lines(suwa.y[,"year"], suwa.y[,"poly.pred"], lwd=3)
 lines(suwa.y[,"year"], suwa.y[,"poly.pred"], lwd=1, col="white")
 
+text(min(suwa.y[,"year"]), max(suwa.y[,"doy"], na.rm=TRUE), "A", font=2, cex=1)
 
 # Plot Tornio
 # Tornio Time Series
@@ -86,6 +87,8 @@ mtext("Year", side=1, line=1.25)
 # Tornio Polynomial trend
 lines(tornio[,"year"], tornio[,"poly.pred"], lwd=3)
 lines(tornio[,"year"], tornio[,"poly.pred"], lwd=1, col="white")
+
+text(min(tornio[,"year"]), max(tornio[,"doy"], na.rm=TRUE), "B", font=2, cex=1)
 
 # Close device
 dev.off()
