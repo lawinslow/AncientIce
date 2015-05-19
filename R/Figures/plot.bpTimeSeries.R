@@ -67,6 +67,8 @@ abline(v=suwa.bp, lty="dashed", lwd=1)
 points(suwa.y[suwa.no.ice,"year"], rep(max.suwa, sum(suwa.no.ice)), pch=23, bg=sNFcc, col=NA, cex=0.9)
 points(suwa.y[suwa.isolObs,"year"], suwa.y[suwa.isolObs,"doy"], pch=20, cex=0.25) # plot observations that have a missing or no-freeze year on either side of it (thus would not show up as line, b/c line must have at least 2 observations in a row)
 
+text(min(suwa.y[,"year"]), max(suwa.y[,"doy"], na.rm=TRUE), "A", font=2, cex=1)
+
 
 #
 # sy <- suwa.y[,"year"]
@@ -84,6 +86,8 @@ mtext("Year", side=1, line=1.25)
 lines(tornio[tornio.bp.i,"year"], tornio[tornio.bp.i,"bp.pred"], col="blue", lwd=3)
 lines(tornio[!tornio.bp.i,"year"], tornio[!tornio.bp.i,"bp.pred"], col="red", lwd=3)
 abline(v=tornio.bp, lty="dashed", lwd=1)
+
+text(min(tornio[,"year"]), max(tornio[,"doy"], na.rm=TRUE), "B", font=2, cex=1)
 
 dev.off()
 

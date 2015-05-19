@@ -14,7 +14,7 @@ ice.new <- read.csv('./AncientIce/lib/ice_data_prep/data/suwa_prepared_analysis_
 #subtract our iceon date from Jan 0 of that year
 ice.new$doy <- as.numeric(
 	as.Date(ISOdate(ice.new$iceon_year, ice.new$iceon_month, ice.new$iceon_day)) - 
-	as.Date(ISOdate(ice.new$rule_year+1, 1, 1, hour=0)-1) #the minus 1 makes it Jan 0
+	as.Date(ISOdate(ice.new$rule_year+1, 1, 1, hour=0)-0) #the minus 1 makes it Jan 0 # removed the -1 b/c we need Dec 31 and Jan 1 to be consecutive integers; I.e., Jan 1 needs to be 0, and Dec 31 needs to be -1.
 	, units='days')
 
 

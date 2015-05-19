@@ -22,8 +22,8 @@ invisible(sapply(paste(func.location, list.files(func.location), sep="/"), sourc
 # ==========================
 # = Tornio BP Alternatives =
 # ==========================
-AIC(lm(doy ~ year, data=t.tornio)) # No BP, just trend AIC = 2155.825
-AIC(lm(doy ~ year + I(year^2), data=t.tornio)) # No BP, just trend AIC = 2154.881
+AIC(lm(doy ~ year, data=tornio)) # No BP, just trend AIC = 2155.825
+AIC(lm(doy ~ year + I(year^2), data=tornio)) # No BP, just trend AIC = 2154.881
 
 
 # ==========

@@ -27,6 +27,15 @@ iceTobit.t <- iceTobit.t[iceTobit.t[,"variable"]!="year",]
 
 load("./AncientIce/Results/tornioBP.RData")
 
+
+# ============
+# = Drop AOD =
+# ============
+iceTobit.s <- iceTobit.s[!iceTobit.s[,"variable"]%in%c("aod"),]
+
+iceTobit.t <- iceTobit.t[!iceTobit.t[,"variable"]%in%c("aod"),]
+
+
 # ==================
 # = Load Functions =
 # ==================
@@ -52,7 +61,7 @@ iceTobit.s[,"Z"] <- as.numeric(iceTobit.s[,"Z"])
 iceTobit.s <- iceTobit.s[order(iceTobit.s[,"water"], iceTobit.s[,"variable"]),]
 XL.s <- c(
 	"air.t.as"=bquote(Air~~phantom()*degree*C), # august september air temperature (where?)
-	"aod"=bquote(AOD), # aerosol optical depth, where?
+	# "aod"=bquote(AOD), # aerosol optical depth, where?
 	"co2"=bquote(CO[2]), # where?
 	"enso"=bquote(ENSO) # el niño southern oscillation
 )
@@ -92,7 +101,7 @@ iceTobit.t <- iceTobit.t[order(iceTobit.t[,"water"], iceTobit.t[,"variable"]),]
 
 XL.t <- c(
 	"air.t.mam"=bquote(Air~~phantom()*degree*C), # august september air temperature (where?)
-	"aod"=bquote(AOD), # aerosol optical depth, where?
+	# "aod"=bquote(AOD), # aerosol optical depth, where?
 	"co2"=bquote(CO[2]), # where?
 	"nao.djfm"=bquote(NAO), # north atlantic oscillation in december january february march
 	"sunspots"=bquote(Sunspots) # number of sunspots
@@ -110,15 +119,15 @@ adj.x.t <- cumsum(adj.x0.t*2)
 xvals.t <- (1:nrow(iceTobit.t))+adj.x.t
 labloc.t <- rollapply(xvals.t, width=2, by=2, mean)
 
-plot(xvals.t, iceTobit.t[,"estimate"], ylim=it.ylim.t, col=c("blue","red"), pch=19, xaxt="n", xlab="", ylab="Tornio\nCoefficient")
+plot(xvals.t, iceTobit.t[,"estimate"], ylim=it.ylim.t, col=c("blue","red"), pch=19, xaxt="n", xlab="", ylab="Torne\nCoefficient")
 # text(labloc.t, y=it.ylim.l.t*1.2, unique(iceTobit.t[,"variable"]), xpd=TRUE)
-text(labloc.t, y=it.ylim.l.t*1.2, parse(text=XL.t), xpd=TRUE)
+text(labloc.t, y=it.ylim.l.t*1.125, parse(text=XL.t), xpd=TRUE)
 axis(side=1, at=labloc.t, labels=FALSE)
 abline(h=0, lty="dotted")
 tornio.range1 <- paste0(min(tornio[tornio.bp.i,"year"]), " – ", max(tornio[tornio.bp.i,"year"]))
 tornio.range2 <- paste0(min(tornio[!tornio.bp.i,"year"]), " – ", max(tornio[!tornio.bp.i,"year"]))
-text(1, 2.25, "B", font=2)
-legend("topright", legend=c(tornio.range1, tornio.range2), text.col=c("blue", "red"), bty="n", inset=c(0,-0.065))
+text(1, 0.25, "B", font=2)
+legend("bottomright", legend=c(tornio.range1, tornio.range2), text.col=c("blue", "red"), bty="n", inset=c(0,-0.025))
 # legend("topright", legend=c("1803 – 1866", "1937 – 2000"), text.col=c("blue", "red"), bty="n", inset=c(-0.02,-0.07))
 arrows(x0=xvals.t, y0=rep(iceTobit.t[,"estimate"],2), x1=xvals.t, y1=c(ity0.t,ity1.t), length=0.05, col=c("blue","red"), angle=90)
 points(xvals.t, iceTobit.t[,"estimate"], col=c("white"), pch=c(NA, 8)[(iceTobit.t[,"diff.Pval"]<0.05)+1], cex=0.6)
