@@ -36,14 +36,16 @@ nao <- merge(nao_djfm, other_nao2, all=TRUE)
 
 
 # Make plot
-png('Figures/NAO_djfm_compare_scatter.png', width=2500, height=1800, res=300)
+png('Figures/NAO_djfm_compare_scatter.png', width=3.5, height=3.5, res=150, units="in")
+par(mar=c(2.5,2.5,0.1,0.1), mgp=c(1.5,0.25,0), tcl=-0.25, ps=10)
 
-plot(nao[,"nao_djfm"], nao[,"torne_nao.djfm"], col=c("black","red")[1+(nao[,"Year"]>=1850)], xlab="Luterbacher DJFM NAO", ylab="Torne data set DJFM NAO")
+plot(nao[,"nao_djfm"], nao[,"torne_nao.djfm"], col=c("black","red")[1+(nao[,"Year"]>=1850)], xlab="Luterbacher DJFM NAO", ylab="Torne data set DJFM NAO", cex=0.85)
 
 legend("topleft", legend=c("Up to 1850", "After 1850"), pch=21, col=c("black","red"))
 
-abline(lm(torne_nao.djfm~nao_djfm, data=nao[nao[,"Year"]>=1850,]), col="black")
-abline(lm(torne_nao.djfm~nao_djfm, data=nao[nao[,"Year"]<1850,]), col="red")
+abline(lm(torne_nao.djfm~nao_djfm, data=nao[nao[,"Year"]<1850,]), col="black")
+abline(lm(torne_nao.djfm~nao_djfm, data=nao[nao[,"Year"]>=1850,]), col="red")
+
 
 
 
