@@ -3,25 +3,25 @@
 # = Load Libraries =
 # ==================
 library(VGAM)
-library(rgenoud)
+#library(rgenoud)
 
 # ==========
 # = Set WD =
 # ==========
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+#setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
 
 
 # ==================
 # = Load Functions =
 # ==================
-func.location <- "./AncientIce/R/Functions"
+func.location <- "R/Functions"
 invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
 
 
 # =============
 # = Load Data =
 # =============
-suwa <- read.table("./AncientIce/Data/suwa.tsv", sep="\t", header=TRUE)
+suwa <- read.table("Data/suwa.tsv", sep="\t", header=TRUE)
 max.suwa <- max(suwa[,"doy"], na.rm=TRUE)
 min.suwa <- -Inf #min(suwa[,"doy"], na.rm=TRUE)
 
