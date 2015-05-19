@@ -11,10 +11,14 @@ nao_djfm = filter(nao_rec, Mon %in% c('Dec', 'Jan', 'Feb', 'Mar')) %>%
 
 png('Figures/NAO_djfm_compare.png', width=2500, height=1800, res=300)
 
-plot(nao_djfm, type='l', ylim=c(-4,4))
+plot(nao_djfm, pch=21, ylim=c(-4,4))
+points(filter(nao_djfm, Year > 1850), pch=21, bg=rgb(0,0,0,0.4))
 
 
 other_nao = read.table('Data/tornio.tsv', header=TRUE, sep='\t')
 
-lines(other_nao$year, other_nao$nao.djfm, col=rgb(1,0,0,0.7))
+points(other_nao$year, other_nao$nao.djfm, col=rgb(1,0,0,0.7))
+
+tmp = filter(other_nao, year > 1850)
+points(tmp$year, tmp$nao.djfm, pch=21, col=rgb(1,0,0,0.7), bg=rgb(0,0,0,0.4))
 dev.off()
