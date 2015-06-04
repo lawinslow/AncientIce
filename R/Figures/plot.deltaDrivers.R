@@ -48,7 +48,7 @@ invisible(sapply(paste(func.location, list.files(func.location), sep="/"), sourc
 # ===========================
 # dev.new(width=3.5, height=5)
 png("./AncientIce/Figures/deltaDrivers.png", width=3.5, height=5, res=150, units="in")
-par(mfrow=c(2,1), mar=c(2.5, 3, 0.5, 0.5), mgp=c(1.5, 0.5, 0), tcl=-0.15, ps=9, cex=1, family="Times")
+par(mfrow=c(2,1), mar=c(2.5, 3, 0.5, 0.5), mgp=c(1.5, 0.5, 0), tcl=-0.15, ps=9, cex=1)
 
 
 # =========================
