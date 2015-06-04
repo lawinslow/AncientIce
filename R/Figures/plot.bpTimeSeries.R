@@ -58,7 +58,7 @@ myBlue <- rgb(t(col2rgb("blue", alpha=TRUE)), alpha=75, maxColorValue=256)
 sNFcc <- c(myBlue,myRed)[(!suwa.bp.i[suwa.no.ice])+1] # suwa No Freeze color code
 
 png("./AncientIce/Figures/timeSeriesBP.png", width=3.5, height=5, res=150, units="in")
-par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1, family="Times")
+par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1)
 
 plot(suwa.y[,"year"], suwa.y[,"doy"], type="l", xlab="", ylab="Ice Formation Day of Year")
 lines(suwa.y[suwa.bp.i,"year"], suwa.y[suwa.bp.i,"bp.pred"], col="blue", lwd=3)
@@ -97,7 +97,7 @@ dev.off()
 # =======================================
 # Plot both Suwa and Tornio
 dev.new(width=3.5, height=5)
-par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1, family="Times")
+par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1)
 
 plot(suwa.y[,"year"], suwa.y[,"doy"], type="l", xlab="", ylab="Ice Formation Day of Year")
 lines(suwa.y[suwa.bp.i,"year"], suwa.y[suwa.bp.i,"bp.pred"], col="blue", lwd=3)
