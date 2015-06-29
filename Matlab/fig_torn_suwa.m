@@ -1,8 +1,8 @@
 
 bumpleft = -0.6;
 bumpright = 0.35;
-set(0, 'DefaultAxesFontName', 'Times New Roman')
-set(0,'DefaultTextFontname', 'Times New Roman')
+set(0, 'DefaultAxesFontName', 'Helvetica')
+set(0,'DefaultTextFontname', 'Helvetica')
 
 %%
 
@@ -148,7 +148,7 @@ gTextLeftBold(gca, 'B', 0.05, 0.05, 'none');
 %suwa = detrend(d.data(:,3));
 %time = d.data(:,1);
 
-f = fopen('../Data/suwa.tsv');
+f = fopen('../Data/suwa.old.tsv');
 %header = strsplit(fgetl(f), '\t');
 header = regexp(fgetl(f), '\t', 'split');
 d = textscan(f, '%f%f%f%f%f%f%f%f%f%f', 'Delimiter','\t', 'TreatAsEmpty', 'NA');
