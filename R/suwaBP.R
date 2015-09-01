@@ -62,21 +62,47 @@ AIC(vglm(doy ~ year + I(year^2), tobit(Lower=min.suwa, Upper=max.suwa), data=suw
 
 suwa.doy <- suwa[,"doy"]
 suwa.year <- suwa[,"year"]
-suwa.bp.nll <- function(bps){	
+suwa.bp.fit <- function(bps){
 	a1 <- suwa.year[bps[1]]
 	x1 <- pmax(suwa.year-a1, 0)
 	
 	a2 <- suwa.year[bps[2]]
 	x2 <- as.integer(suwa.year>a2)
 	
-	fit <- vglm(suwa.doy ~ suwa.year + x1 + x2, tobit(Lower=min.suwa, Upper=max.suwa))
-	
+	vglm(suwa.doy ~ suwa.year + x1 + x2, tobit(Lower=min.suwa, Upper=max.suwa))
+}
+suwa.bp.nll <- function(bps){		
+	fit <- suwa.bp.fit(bps)
 	return(AIC(fit))
 }
+
+
+dom <- matrix(c(10,nrow(suwa)-11, 11, nrow(suwa)-10), ncol=2, byrow=TRUE)
+suwa.bp.genoud <- genoud(suwa.bp.nll, 2, pop.size=50, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) 
 
 # (test1 <- suwa.bp.nll(c(358,458))) # corresponds to 1800 and 1900
 # (test2 <- suwa.bp.nll(c(369,458))) # corresponds to 1811 and 1900
 # (test3 <- suwa.bp.nll(c(369,431))) # corresponds to 1811 and 1873)
+# (test4 <- suwa.bp.nll(c(375,451))) # corresponds to 1817 and 1893); from a quick optimization routine
+test4.fit <- suwa.bp.fit(bps=c(375, 451))
+# png("~/Desktop/residualsTobitSuwa.png");qqnorm(resid(test4.fit, type="pearson")[,1]);qqline(resid(test4.fit, type="pearson")[,1]);dev.off()
+
+suwa.ci <- data.frame("year"=suwa.year, "doy"=suwa.doy)
+suwa.se.fit <- data.frame(predict(test4.fit, se.fit=TRUE)$se.fit)
+suwa.se.fit[,"year"] <- suwa.year[as.integer(row.names(suwa.se.fit))]
+suwa.se.fit[,"fitted"] <- predict(test4.fit, se.fit=TRUE)$fitted.values[,1]
+suwa.se.fit[,"se"] <- suwa.se.fit[,2]
+suwa.se.fit[,"upr"] <- suwa.se.fit[,"fitted"] + se.fit[,1]*1.96
+suwa.se.fit[,"lwr"] <- suwa.se.fit[,"fitted"] - se.fit[,1]*1.96
+
+suwa.ci <- merge(suwa.ci, suwa.se.fit, by="year", all=TRUE)
+
+png("~/Desktop/suwa.ci.png", width=8*72, height=6*72)
+plot(suwa.year, suwa.doy, pch=20)
+lines(suwa.ci[,"year"], suwa.ci[,"fitted"], col="black", lwd=2)
+lines(suwa.ci[,"year"], suwa.ci[,"upr"], col="blue", lwd=2)
+lines(suwa.ci[,"year"], suwa.ci[,"lwr"], col="blue", lwd=2)
+dev.off()
 
 
 
