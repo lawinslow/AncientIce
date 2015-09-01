@@ -3,32 +3,43 @@
 # = Load Libraries =
 # ==================
 library(VGAM)
-library(rgenoud)
+#library(rgenoud)
+
+# ==========
+# = Set WD =
+# ==========
+#setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
 
 
 # ==================
 # = Load Functions =
 # ==================
-func.location <- "/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/Functions"
+func.location <- "R/Functions"
 invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
 
 
 # =============
 # = Load Data =
 # =============
-suwa <- read.table("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Data/suwa.tsv", sep="\t", header=TRUE)
+suwa <- read.table("Data/suwa.tsv", sep="\t", header=TRUE)
 max.suwa <- max(suwa[,"doy"], na.rm=TRUE)
 min.suwa <- -Inf #min(suwa[,"doy"], na.rm=TRUE)
-suwa.no.ice <- suwa[,"no.ice"]==1L & !is.na(suwa[,"no.ice"])
-suwa[suwa.no.ice ,"doy"] <- max.suwa
+
+suwa.no.ice <- suwa[,"no.ice"]==1L & !is.na(suwa[,"no.ice"]) # indexes years known to not freeze (which also means that we can't know the "doy" [feeze date] b/c it doesn't exist)
+suwa[suwa.no.ice ,"doy"] <- max.suwa # for no freeze years; note that the answer is the same if we replace with (max.suwa) vs. with (max.suwa+100) [or any other positive increase]
+
+# suwa.nodoy.freeze <- suwa[,"no.ice"]==0L & !is.na(suwa[,"no.ice"]) & is.na(suwa[,"doy"]) # indexes years
+# suwa[suwa.nodoy.freeze,"doy"] <- min.suwa
+
+
 suwa[,"year2"] <- 1:nrow(suwa)
 
 
 # =========================
 # = Breakpoint with Tobit =
 # =========================
-AIC(vglm(doy ~ year, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint AIC = 3540.767
-AIC(vglm(doy ~ year + I(year^2), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint +year^2 AIC = 3519.85
+AIC(vglm(doy ~ year, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint AIC = 3540.767 (lower limit = -Inf); AIC = 4222.201 (lower limit = -53)
+AIC(vglm(doy ~ year + I(year^2), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint +year^2 AIC = 3519.85 (lower limit = -Inf); AIC = 4110.219 (lower limit = -53)
 
 # =========================================
 # = Suwa: Calculate Breakpoint with Tobit =
@@ -138,18 +149,21 @@ suwa.2bp.nll.100 <- function(bps){
 
 # suwa.2bp.optim.de <- DEoptim(suwa.2bp.nll, c(10,10), c(nrow(suwa)-10, nrow(suwa)-10), control=DEoptim.control(itermax=5, NP=500))
 dom <- matrix(c(10,nrow(suwa)-11, 11, nrow(suwa)-10), ncol=2, byrow=TRUE)
-suwa.2bp.optim.gen.25 <- genoud(suwa.2bp.nll.25, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with soft penalty for BP < 25 yrs apart, BP's are 1828 (386) and 1853 (411); AIC = 3515.235
+suwa.2bp.optim.gen.25 <- genoud(suwa.2bp.nll.25, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) 
+# OLD result: with soft penalty for BP < 25 yrs apart, BP's are 1828 (386) and 1853 (411); AIC = 3515.235
 
-suwa.2bp.optim.gen.50 <- genoud(suwa.2bp.nll.50, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with 50 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3516.003
+suwa.2bp.optim.gen.50 <- genoud(suwa.2bp.nll.50, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) 
+# OLD result: with 50 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3516.003
 
-suwa.2bp.optim.gen.100 <- genoud(suwa.2bp.nll.100, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) # with 100 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3516.003
+suwa.2bp.optim.gen.100 <- genoud(suwa.2bp.nll.100, 2, pop.size=500, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2) 
+# OLD result: with 100 year hard limit, BP's are 1811 (369) and 1973 (531); AIC = 3516.003
 
 
 
 # ================
 # = Save Results =
 # ================
-save(suwa.bp, suwa.bp.i, aic.suwa, suwa, max.suwa, min.suwa, suwa.no.ice, bp.opts.s, suwa.2bp.optim.gen.25,suwa.2bp.nll.50, suwa.2bp.nll.100, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
+save(suwa.bp, suwa.bp.i, aic.suwa, suwa, max.suwa, min.suwa, suwa.no.ice, bp.opts.s, suwa.2bp.optim.gen.25,suwa.2bp.nll.50, suwa.2bp.nll.100, file="./AncientIce/Results/suwaBP.RData")
 
 
 # =================================

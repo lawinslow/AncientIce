@@ -1,0 +1,3 @@
+[submodule "lib/ice_data_prep"]
+	path = lib/ice_data_prep
+	url = https://github.com/lawinslow/ice_data_prep.git

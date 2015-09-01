@@ -1,4 +1,10 @@
 
+
+# ==========
+# = Set WD =
+# ==========
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+
 # ==================
 # = Load Libraries =
 # ==================
@@ -9,8 +15,8 @@ library(reshape2)
 # ================
 # = Load Results =
 # ================
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
+load("./AncientIce/Results/tornioBP.RData")
+load("./AncientIce/Results/suwaBP.RData")
 
 
 
@@ -21,7 +27,7 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP
 # = Suwa: 
 # ========
 # dev.new(width=3.5, height=3.5)
-png("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Figures/suwa.bp.residVar.png", width=3.5, height=3.5, res=150, units="in")
+png("./AncientIce/Figures/suwa.bp.residVar.png", width=3.5, height=3.5, res=150, units="in")
 par(mar=c(2.5, 2.5, 0.5, 2.5), mgp=c(1.5, 0.5, 0), tcl=-0.35, ps=9, cex=1)
 plot(suwa[bp.opts.s,"year"], suwa[bp.opts.s,"doy"], type="l", xlab="Year", ylab="Ice Breakup Day of Year")
 par(new=TRUE)
@@ -37,7 +43,7 @@ dev.off()
 # = Plot time series and breakpoint likelihood =
 # ==============================================
 # dev.new(width=3.5, height=3.5)
-png("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Figures/tornio.bp.R2.png", width=3.5, height=3.5, res=150, units="in")
+png("./AncientIce/Figures/tornio.bp.R2.png", width=3.5, height=3.5, res=150, units="in")
 par(mar=c(2.5, 2.5, 0.5, 2.5), mgp=c(1.5, 0.5, 0), tcl=-0.35, ps=9, cex=1)
 plot(tornio[bp.opts.t,"year"], tornio[bp.opts.t,"doy"], type="l", xlab="Year", ylab="Ice Breakup Day of Year")
 par(new=TRUE)
@@ -73,7 +79,7 @@ smplt <- c(0.8,0.85, 0.15,0.75)
 bgplt <- c(0.1,0.95,0.1,0.95)
 axargs <- list(mgp=c(1.1,0.3,0))
 # dev.new(width=5, height=5)
-png("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Figures/tornio.2BP.surface.png", width=5, height=5, res=150, units="in")
+png("./AncientIce/Figures/tornio.2BP.surface.png", width=5, height=5, res=150, units="in")
 par(mar=c(2,2,0.1,2), ps=10, cex=1, family="Times", mgp=c(1.25,0.25,0), tcl=-0.15)
 image.plot(
 	x=as.integer(unique(tornio[,"year"])), #as.integer(rownames(bp2.mat)), 

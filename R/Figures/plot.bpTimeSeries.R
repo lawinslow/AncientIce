@@ -5,11 +5,17 @@
 library(VGAM)
 
 
+# ==========
+# = Set WD =
+# ==========
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+
+
 # ================
 # = Load Results =
 # ================
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
+load("./AncientIce/Results/tornioBP.RData")
+load("./AncientIce/Results/suwaBP.RData")
 
 
 # =======================
@@ -51,8 +57,8 @@ myRed <- rgb(t(col2rgb("red", alpha=TRUE)), alpha=75, maxColorValue=256)
 myBlue <- rgb(t(col2rgb("blue", alpha=TRUE)), alpha=75, maxColorValue=256)
 sNFcc <- c(myBlue,myRed)[(!suwa.bp.i[suwa.no.ice])+1] # suwa No Freeze color code
 
-png("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Figures/timeSeriesBP.png", width=3.5, height=5, res=150, units="in")
-par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1, family="Times")
+png("./AncientIce/Figures/timeSeriesBP.png", width=3.5, height=5, res=150, units="in")
+par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1)
 
 plot(suwa.y[,"year"], suwa.y[,"doy"], type="l", xlab="", ylab="Ice Formation Day of Year")
 lines(suwa.y[suwa.bp.i,"year"], suwa.y[suwa.bp.i,"bp.pred"], col="blue", lwd=3)
@@ -60,6 +66,8 @@ lines(suwa.y[!suwa.bp.i,"year"], suwa.y[!suwa.bp.i,"bp.pred"], col="red", lwd=3)
 abline(v=suwa.bp, lty="dashed", lwd=1)
 points(suwa.y[suwa.no.ice,"year"], rep(max.suwa, sum(suwa.no.ice)), pch=23, bg=sNFcc, col=NA, cex=0.9)
 points(suwa.y[suwa.isolObs,"year"], suwa.y[suwa.isolObs,"doy"], pch=20, cex=0.25) # plot observations that have a missing or no-freeze year on either side of it (thus would not show up as line, b/c line must have at least 2 observations in a row)
+
+text(min(suwa.y[,"year"]), max(suwa.y[,"doy"], na.rm=TRUE), "A", font=2, cex=1)
 
 
 #
@@ -79,6 +87,8 @@ lines(tornio[tornio.bp.i,"year"], tornio[tornio.bp.i,"bp.pred"], col="blue", lwd
 lines(tornio[!tornio.bp.i,"year"], tornio[!tornio.bp.i,"bp.pred"], col="red", lwd=3)
 abline(v=tornio.bp, lty="dashed", lwd=1)
 
+text(min(tornio[,"year"]), max(tornio[,"doy"], na.rm=TRUE), "B", font=2, cex=1)
+
 dev.off()
 
 
@@ -87,7 +97,7 @@ dev.off()
 # =======================================
 # Plot both Suwa and Tornio
 dev.new(width=3.5, height=5)
-par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1, family="Times")
+par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1)
 
 plot(suwa.y[,"year"], suwa.y[,"doy"], type="l", xlab="", ylab="Ice Formation Day of Year")
 lines(suwa.y[suwa.bp.i,"year"], suwa.y[suwa.bp.i,"bp.pred"], col="blue", lwd=3)

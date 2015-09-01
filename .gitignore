@@ -1,3 +1,5 @@
 *.docx
 *.asv
-
+*.Rhistory
+.Rproj.user
+*.Rproj

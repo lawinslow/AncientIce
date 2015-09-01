@@ -1,4 +1,9 @@
 
+# ==========
+# = Set WD =
+# ==========
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+
 
 # ===============
 # = Set Options =
@@ -9,7 +14,7 @@ n.boot <- 1E3
 # ==================
 # = Load Functions =
 # ==================
-func.location <- "/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/Functions"
+func.location <- "./AncientIce/R/Functions"
 invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
 
 
@@ -23,9 +28,18 @@ library(plyr)
 # =============
 # = Load Data =
 # =============
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/deltaDrivers.RData")
+load("./AncientIce/Results/tornioBP.RData")
+load("./AncientIce/Results/suwaBP.RData")
+load("./AncientIce/Results/deltaDrivers.RData")
+
+
+# ==================
+# = Plot Funky NAO =
+# ==================
+png("~/Desktop/NAO.png", width=4.5, height=2.5, res=300, units="in")
+par(mar=c(2.25,2.0,0.1,0.1), mgp=c(1.25,0.15,0), tcl=-0.15, ps=8, family="Times")
+plot(tornio[,"year"], tornio[,"nao.djfm"], type="l", xlab="year", ylab="NAO (djfm)")
+dev.off()
 
 
 # ===============================

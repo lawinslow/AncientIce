@@ -1,0 +1,39 @@
+
+
+# ==========
+# = Set WD =
+# ==========
+#argh absolute paths
+# setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+#ice.new <- read.table("./AncientIce/lib/ice_data_prep/data/suwa_prepared_analysis_data.csv", sep=",", header=TRUE)
+
+#pull from web (could change this to pull from submodule, but I always have trouble with them)
+ice.new <- read.csv('./AncientIce/lib/ice_data_prep/data/suwa_prepared_analysis_data.csv', header=TRUE, as.is=TRUE)
+
+
+#subtract our iceon date from Jan 0 of that year
+ice.new$doy <- as.numeric(
+	as.Date(ISOdate(ice.new$iceon_year, ice.new$iceon_month, ice.new$iceon_day)) - 
+	as.Date(ISOdate(ice.new$rule_year+1, 1, 1, hour=0)-0) #the minus 1 makes it Jan 0 # removed the -1 b/c we need Dec 31 and Jan 1 to be consecutive integers; I.e., Jan 1 needs to be 0, and Dec 31 needs to be -1.
+	, units='days')
+
+
+ice.new$no.ice <- NA
+ice.new$no.ice[ice.new$froze == 'Y'] <- 0
+ice.new$no.ice[ice.new$froze == 'N'] <- 1
+
+suwa.old <- read.table("./AncientIce/Data/suwa.old.tsv", sep="\t", header=TRUE)
+
+
+suwa.new <- ice.new[, c('rule_year', 'no.ice', 'doy')]
+names(suwa.new) <- c('year', 'no.ice', 'doy')
+
+suwa.new <- merge(suwa.new, suwa.old[,c('year', 'enso', 'co2', 'sunspots', 'air.t.as', 'aod', 'reff')], all=TRUE)
+
+
+# ===============
+# = Save Output =
+# ===============
+write.table(suwa.new, file="./AncientIce/Data/suwa.tsv", sep="\t", row.names=FALSE)
+
+
