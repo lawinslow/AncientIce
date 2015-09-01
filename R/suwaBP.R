@@ -44,21 +44,41 @@ AIC(vglm(doy ~ year + I(year^2), tobit(Lower=min.suwa, Upper=max.suwa), data=suw
 # =========================================
 # = Suwa: Calculate Breakpoint with Tobit =
 # =========================================
-bp.opts.s <- 10:(nrow(suwa)-10)
-s.bp.pb <- txtProgressBar(min=1, max=length(bp.opts.s), style=3)
-aic.suwa <- rep(NA, length(bp.opts.s))
-for(i in 1:length(bp.opts.s)){
-	t.bp <- bp.opts.s[i]
-	t.bp.year <- suwa[t.bp,"year"]
-	# t.suwa <- suwa
-	# t.suwa[,"bp"] <- (1:nrow(t.suwa))>=t.bp
+# bp.opts.s <- 10:(nrow(suwa)-10)
+# s.bp.pb <- txtProgressBar(min=1, max=length(bp.opts.s), style=3)
+# aic.suwa <- rep(NA, length(bp.opts.s))
+# for(i in 1:length(bp.opts.s)){
+# 	t.bp <- bp.opts.s[i]
+# 	t.bp.year <- suwa[t.bp,"year"]
+# 	# t.suwa <- suwa
+# 	# t.suwa[,"bp"] <- (1:nrow(t.suwa))>=t.bp
+#
+# 	tobit.suwa.year <- vglm(doy ~ year + pmax(I(year-t.bp.year), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa) # 1812
+#
+# 	aic.suwa[i] <- AIC(tobit.suwa.year) # Best AIC w/ 1 BP: 3517.579 (just a little over 2 AIC points better than year + year^2)
+#
+# 	setTxtProgressBar(s.bp.pb, i)
+# }
+
+suwa.doy <- suwa[,"doy"]
+suwa.year <- suwa[,"year"]
+suwa.bp.nll <- function(bps){	
+	a1 <- suwa.year[bps[1]]
+	x1 <- pmax(suwa.year-a1, 0)
 	
-	tobit.suwa.year <- vglm(doy ~ year + pmax(I(year-t.bp.year), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa) # 1812
-
-	aic.suwa[i] <- AIC(tobit.suwa.year) # Best AIC w/ 1 BP: 3517.579 (just a little over 2 AIC points better than year + year^2)
-
-	setTxtProgressBar(s.bp.pb, i)
+	a2 <- suwa.year[bps[2]]
+	x2 <- as.integer(suwa.year>a2)
+	
+	fit <- vglm(suwa.doy ~ suwa.year + x1 + x2, tobit(Lower=min.suwa, Upper=max.suwa))
+	
+	return(AIC(fit))
 }
+
+# (test1 <- suwa.bp.nll(c(358,458))) # corresponds to 1800 and 1900
+# (test2 <- suwa.bp.nll(c(369,458))) # corresponds to 1811 and 1900
+# (test3 <- suwa.bp.nll(c(369,431))) # corresponds to 1811 and 1873)
+
+
 
 
 # =================================
@@ -126,7 +146,7 @@ suwa.2bp.nll.50 <- function(bps){
 	
 	tobit.suwa.year <- vglm(doy ~ year + pmax(I(year-t.bp.year1), 0) + pmax(I(year-t.bp.year2), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa) # 1812
 
-	AIC(tobit.suwa.year) #+ penalty
+	AIC(tobit.suwa.year) # + penalty
 }
 
 
