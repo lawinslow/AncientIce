@@ -8,7 +8,7 @@ library(VGAM)
 # ==========
 # = Set WD =
 # ==========
-#setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+#setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
 
 
 # ==================
