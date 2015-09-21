@@ -84,7 +84,7 @@ text(labloc.s, y=it.ylim.l.s*1.4, parse(text=XL.s), xpd=TRUE)
 axis(side=1, at=labloc.s, labels=FALSE)
 abline(h=0, lty="dotted")
 text(1, 11, "A", font=2, cex=1)
-legend("topright", legend=c("1581 – 1681", "1897 – 1997"), text.col=c("blue","red"), bty="n", inset=c(0,-0.065))
+legend("topright", legend=c("1581 – 1655", "1923 – 1997"), text.col=c("blue","red"), bty="n", inset=c(0,-0.065))
 arrows(x0=xvals.s, y0=rep(iceTobit.s[,"estimate"],2), x1=xvals.s, y1=c(ity0.s,ity1.s), length=0.05, col=c("blue","red"), angle=90)
 points(xvals.s, iceTobit.s[,"estimate"], col=c("white"), pch=c(NA, 8)[(iceTobit.s[,"diff.Pval"]<0.05)+1], cex=0.6)
 
