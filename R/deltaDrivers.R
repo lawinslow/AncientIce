@@ -31,8 +31,11 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP
 # ===============================================
 # suwa.1 <- suwa[suwa.bp.i,]
 # suwa.2 <- suwa[!suwa.bp.i,]
-suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1681
-suwa.after.i <- suwa[,"year"] >= 1897 & suwa[,"year"] <= 1997
+# suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1681
+# suwa.after.i <- suwa[,"year"] >= 1897 & suwa[,"year"] <= 1997
+
+suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1655
+suwa.after.i <- suwa[,"year"] >= 1923 & suwa[,"year"] <= 1997
 
 suwa.1 <- suwa[suwa.before.i,]
 suwa.2 <- suwa[suwa.after.i,]
