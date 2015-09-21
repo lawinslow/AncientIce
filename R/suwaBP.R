@@ -190,7 +190,7 @@ suwa.2bp.nll.100 <- function(bps){
 	
 	tobit.suwa.year <- vglm(doy ~ year + pmax(I(year-t.bp.year1), 0) + pmax(I(year-t.bp.year2), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa) # 1812
 
-	AIC(tobit.suwa.year) #+ penalty
+	AIC(tobit.suwa.year) # + penalty
 }
 
 # suwa.2bp.optim.de <- DEoptim(suwa.2bp.nll, c(10,10), c(nrow(suwa)-10, nrow(suwa)-10), control=DEoptim.control(itermax=5, NP=500))
