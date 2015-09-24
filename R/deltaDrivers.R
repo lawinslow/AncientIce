@@ -2,7 +2,7 @@
 # ===============
 # = Set Options =
 # ===============
-n.boot <- 1E3
+n.boot <- 5 #1E3
 
 
 # ==================
@@ -31,18 +31,43 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP
 # ===============================================
 # suwa.1 <- suwa[suwa.bp.i,]
 # suwa.2 <- suwa[!suwa.bp.i,]
-suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1681
-suwa.after.i <- suwa[,"year"] >= 1897 & suwa[,"year"] <= 1997
+# suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1681
+# suwa.after.i <- suwa[,"year"] >= 1897 & suwa[,"year"] <= 1997
+
+suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1655
+suwa.after.i <- suwa[,"year"] >= 1923 & suwa[,"year"] <= 1997
 
 suwa.1 <- suwa[suwa.before.i,]
 suwa.2 <- suwa[suwa.after.i,]
 
 suwa.preds <- c("year", "co2", "enso", "air.t.as", "aod")
 
-for(i in 1:length(suwa.preds)){
-	suwa.1[,suwa.preds[i]] <- scale(suwa.1[,suwa.preds[i]])
-	suwa.2[,suwa.preds[i]] <- scale(suwa.2[,suwa.preds[i]])
+detrend <- function(x, method=c("ols","tobit")){
+	method <- match.arg(method)
+	n <- length(x)
+	time <- 1:n
+	
+	# if(method=="ols"){
+	# 	residuals(lm(x~time))
+	# }
+	
+	if(method=="tobit"){
+		residuals(vglm(x~time, tobit(Lower=min.suwa, Upper=max.suwa), na.action=na.exclude))[,1]
+	}else{
+		residuals(lm(x~time, na.action=na.exclude))
+	}
+	
 }
+
+
+for(i in 1:length(suwa.preds)){
+	# suwa.1[,suwa.preds[i]] <- scale((suwa.1[,suwa.preds[i]]))
+	# suwa.2[,suwa.preds[i]] <- scale((suwa.2[,suwa.preds[i]]))
+	suwa.1[,suwa.preds[i]] <- scale(detrend(suwa.1[,suwa.preds[i]]))
+	suwa.2[,suwa.preds[i]] <- scale(detrend(suwa.2[,suwa.preds[i]]))
+}
+suwa.1[,"doy"] <- detrend(suwa.1[,"doy"], method="tobit")
+suwa.2[,"doy"] <- detrend(suwa.2[,"doy"], method="tobit")
 
 
 iceTobit.s1 <- data.frame("water"=NA, "period"=NA, "variable"=NA, "estimate"=NA, "stdE"=NA, "Z"=NA)
@@ -100,9 +125,13 @@ tornio.2 <- tornio[!tornio.bp.i,]
 
 tornio.preds <- c("year", "co2", "nao.djfm", "air.t.mam", "aod", "sunspots")
 for(i in 1:length(tornio.preds)){
-	tornio.1[,tornio.preds[i]] <- scale(tornio.1[,tornio.preds[i]])
-	tornio.2[,tornio.preds[i]] <- scale(tornio.2[,tornio.preds[i]])
+	# tornio.1[,tornio.preds[i]] <- scale(tornio.1[,tornio.preds[i]])
+	# tornio.2[,tornio.preds[i]] <- scale(tornio.2[,tornio.preds[i]])
+	tornio.1[,tornio.preds[i]] <- scale(detrend(tornio.1[,tornio.preds[i]]))
+	tornio.2[,tornio.preds[i]] <- scale(detrend(tornio.2[,tornio.preds[i]]))
 }
+tornio.1[,"doy"] <- detrend(tornio.1[,"doy"])
+tornio.2[,"doy"] <- detrend(tornio.2[,"doy"])
 
 
 iceTobit.t1 <- data.frame("water"=NA, "period"=NA, "variable"=NA, "estimate"=NA, "stdE"=NA, "Z"=NA)
