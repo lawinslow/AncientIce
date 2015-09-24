@@ -1,4 +1,5 @@
 
+library(plyr)
 
 # ==========
 # = Set WD =
@@ -43,6 +44,15 @@ uncorrect.index <- suwa.new[,"year"] <= 1872
 suwa.uncorr <- suwa.new
 suwa.uncorr[uncorrect.index,"doy"] <- suwa.new[uncorrect.index,"doy"] + 30
 
+
+# =========================
+# = Add latest SUWA years =
+# =========================
+
+new_data = data.frame(year=2005:2014, 
+                      no.ice=c(0, 1, 0, 1, 1, 0, 0, 0, 1, 1),
+                      doy=c(-2, NA, 25, NA, NA, 11, 30, 6, NA, NA))
+suwa.uncorr = rbind.fill(suwa.uncorr, new_data)
 
 # ===============
 # = Save Output =
