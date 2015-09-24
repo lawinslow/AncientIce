@@ -1,4 +1,4 @@
-"year"	"no.ice"	"doy"	"enso"	"co2"	"sunspots"	"air.t.as"	"aod"	"reff"
+year	no.ice	doy	enso	co2	sunspots	air.t.as	aod	reff
 1443	0	-24	0.502	285.1375	NA	NA	0.04	0.35
 1444	0	-39	-0.558	285.3736	NA	NA	0.015	0.25
 1445	0	-31	-0.552	285.5992	NA	NA	0.012	0.23
@@ -561,3 +561,13 @@
 2002	0	5	-1.078	369.801	104	NA	NA	NA
 2003	0	14	NA	371.6988	63.7	NA	NA	NA
 2004	1	NA	NA	373.618	40.4	NA	NA	NA
+2005	0	-2						
+2006	1	NA						
+2007	0	25						
+2008	1	NA						
+2009	1	NA						
+2010	0	11						
+2011	0	30						
+2012	0	6						
+2013	1	NA						
+2014	1	NA						
