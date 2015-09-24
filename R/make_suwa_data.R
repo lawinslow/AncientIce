@@ -31,6 +31,11 @@ names(suwa.new) <- c('year', 'no.ice', 'doy')
 suwa.new <- merge(suwa.new, suwa.old[,c('year', 'enso', 'co2', 'sunspots', 'air.t.as', 'aod', 'reff')], all=TRUE)
 
 
+add.new <- suwa.new[,"year"]%in%c(2005:2014)
+add.old <- suwa.old[,"year"]%in%c(2005:2014)
+suwa.new[add.new,c("no.ice","doy")] <- suwa.old[add.old,c("no.ice","doy")]
+
+
 # ==================
 # = Uncorrect Suwa =
 # ==================
