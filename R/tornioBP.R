@@ -40,7 +40,8 @@ for(i in 1:length(bp.opts.t)){
 	t.bp.year.t <- tornio[t.bp.t,"year"]
 	t.tornio <- tornio
 	t.tornio[,"bp"] <- (1:nrow(t.tornio))>=t.bp.t
-	tobit.tornio.year <- lm(doy ~ year + pmax(I(year-t.bp.year.t),0), data=t.tornio) # 1867 (best AIC = 1240.113)
+	x1 <- pmax(I(t.tornio[,"year"]-t.bp.year.t),0)
+	tobit.tornio.year <- lm(doy ~ year + x1, data=t.tornio) # 1867 (best AIC = 1240.113)
 	aic.tornio[i] <- extractAIC(tobit.tornio.year)[2]
 }
 
@@ -87,11 +88,29 @@ min(aic.tornio2[torn.100]) # best 2BP model, where BP's are >= 100 years apart, 
 
 torn.best.2BP.25.yr <- tornio[bp.opts.t2[torn.25,][which.min(aic.tornio2[torn.25]),],"year"]
 
+# =================================
+# = Get CI for BP Time Series Fit =
+# =================================
+x1 <- pmax(I(t.tornio[,"year"]-tornio.bp),0)
+tornio.bp.fit.out <- lm(doy ~ year + x1, data=tornio)
+
+tornio.ci <- data.frame("year"=tornio[,"year"], "doy"=tornio[,"doy"])
+newdata <- data.frame("year"=tornio[,"year"], x1=x1)
+
+tornio.se.fit <- data.frame(se.fit=predict(tornio.bp.fit.out, newdata=newdata, se.fit=TRUE, na.action=na.exclude)$se.fit)
+tornio.se.fit[,"year"] <- tornio[,"year"][as.integer(row.names(tornio.se.fit))]
+tornio.se.fit[,"fitted"] <- predict(tornio.bp.fit.out, newdata=newdata, se.fit=TRUE)$fit
+# tornio.se.fit[,"se"] <- tornio.se.fit[,2]
+tornio.se.fit[,"upr"] <- tornio.se.fit[,"fitted"] + tornio.se.fit[,1]*1.96
+tornio.se.fit[,"lwr"] <- tornio.se.fit[,"fitted"] - tornio.se.fit[,1]*1.96
+
+tornio.ci <- merge(tornio.ci, tornio.se.fit, by="year", all=TRUE)
+
 
 # ================
 # = Save Results =
 # ================
-save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, aic.tornio2,bp.opts.t2, file="./AncientIce/Results/tornioBP.RData")
+save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, aic.tornio2,bp.opts.t2, tornio.ci, file="./AncientIce/Results/tornioBP.RData")
 
 
 
