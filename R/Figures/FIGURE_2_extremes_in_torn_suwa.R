@@ -5,7 +5,7 @@ torn = read.table("Data/tornio.tsv", sep='\t', header=TRUE)
 
 #because these are weird, I'm just fixing these
 
-suwa_bin_tops = c(seq(1499, 1949, by=50), 2004)
+suwa_bin_tops = c(seq(1499, 1949, by=50), 2014)
 suwa_bin_bots = c(1443, seq(1500, 1950, by=50))
 torn_bin_tops = c(seq(1749, 1949, by=50), 2013)
 torn_bin_bots = c(1693, seq(1750, 1950, by=50))
