@@ -67,18 +67,20 @@ suwa.year <- suwa[,"year"]
 suwa.bp.fit <- function(bps, method=c("VGAM", "bayes")){
 	method <- match.arg(method)
 	
-	a1 <- suwa.year[suwa.bp[1]]
+	a1 <- suwa.year[bps[1]]
 	x1 <- pmax(suwa.year-a1, 0)
-	a2 <- suwa.year[suwa.bp[2]]
+	a2 <- suwa.year[bps[2]]
 	x2 <- as.integer(suwa.year>a2)
 	
 	if(method=="VGAM"){
 		
+		vglm(suwa.doy ~ suwa.year + x1 + x2, tobit(Lower=min.suwa, Upper=max.suwa), na.action=na.exclude)
+		
 	}else if(method=="bayes"){
-		bayes.tobit <- MCMCtobit(suwa.doy ~ suwa.year + x1 + x2, below=-Inf, above=max.suwa, mcmc=3000, verbose=0, chains=3, thin=5, burnin=2E3)
+		
+		bayes.tobit <- MCMCtobit(suwa.doy ~ suwa.year + x1 + x2, below=-Inf, above=max.suwa, mcmc=3000, verbose=0, thin=5, burnin=2E3)
 
 	}
-		vglm(suwa.doy ~ suwa.year + x1 + x2, tobit(Lower=min.suwa, Upper=max.suwa), na.action=na.exclude)
 }
 suwa.bp.nll <- function(bps, ...){		
 	fit <- suwa.bp.fit(bps, ...)
@@ -164,7 +166,7 @@ aic.suwa <- AIC(suwa.bp.fit.out)
 # ================
 # = Save Results =
 # ================
-save(suwa.bp, suwa.bp.i, aic.suwa, suwa, max.suwa, min.suwa, suwa.no.ice, file="./AncientIce/Results/suwaBP.RData")
+save(suwa.bp, suwa.bp.i, aic.suwa, suwa, max.suwa, min.suwa, suwa.no.ice, suwa.ci, file="./Results/suwaBP.RData")
 
 
 # =================================
