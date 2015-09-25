@@ -3,12 +3,12 @@
 # = Load Libraries =
 # ==================
 library(VGAM)
-#library(rgenoud)
+library(rgenoud)
 
 # ==========
 # = Set WD =
 # ==========
-#setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
+# setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
 
 
 # ==================
@@ -38,8 +38,8 @@ suwa[,"year2"] <- 1:nrow(suwa)
 # =========================
 # = Breakpoint with Tobit =
 # =========================
-AIC(vglm(doy ~ year, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint AIC = 3540.767 (lower limit = -Inf); AIC = 4222.201 (lower limit = -53)
-AIC(vglm(doy ~ year + I(year^2), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint +year^2 AIC = 3519.85 (lower limit = -Inf); AIC = 4110.219 (lower limit = -53)
+# AIC(vglm(doy ~ year, tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint AIC = 3540.767 (lower limit = -Inf); AIC = 4222.201 (lower limit = -53)
+# AIC(vglm(doy ~ year + I(year^2), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa)) # No breakpoint +year^2 AIC = 3519.85 (lower limit = -Inf); AIC = 4110.219 (lower limit = -53)
 
 # =========================================
 # = Suwa: Calculate Breakpoint with Tobit =
@@ -62,6 +62,7 @@ AIC(vglm(doy ~ year + I(year^2), tobit(Lower=min.suwa, Upper=max.suwa), data=suw
 
 suwa.doy <- suwa[,"doy"]
 suwa.year <- suwa[,"year"]
+
 suwa.bp.fit <- function(bps){
 	a1 <- suwa.year[bps[1]]
 	x1 <- pmax(suwa.year-a1, 0)
@@ -92,8 +93,8 @@ suwa.se.fit <- data.frame(predict(test4.fit, se.fit=TRUE)$se.fit)
 suwa.se.fit[,"year"] <- suwa.year[as.integer(row.names(suwa.se.fit))]
 suwa.se.fit[,"fitted"] <- predict(test4.fit, se.fit=TRUE)$fitted.values[,1]
 suwa.se.fit[,"se"] <- suwa.se.fit[,2]
-suwa.se.fit[,"upr"] <- suwa.se.fit[,"fitted"] + se.fit[,1]*1.96
-suwa.se.fit[,"lwr"] <- suwa.se.fit[,"fitted"] - se.fit[,1]*1.96
+suwa.se.fit[,"upr"] <- suwa.se.fit[,"fitted"] + suwa.se.fit[,1]*1.96
+suwa.se.fit[,"lwr"] <- suwa.se.fit[,"fitted"] - suwa.se.fit[,1]*1.96
 
 suwa.ci <- merge(suwa.ci, suwa.se.fit, by="year", all=TRUE)
 
