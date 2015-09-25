@@ -129,7 +129,7 @@ suwa.se.fit[,"lwr"] <- suwa.se.fit[,"fitted"] - suwa.se.fit[,1]*1.96
 
 suwa.ci <- merge(suwa.ci, suwa.se.fit, by="year", all=TRUE)
 
-png("~/Desktop/suwa.ci.png", width=8*72, height=6*72)
+png("./Figures/suwa.ci.png", width=8*72, height=6*72)
 plot(suwa.year, suwa.doy, pch=20)
 plot.suwaFit <- function(suwa.ci){
 	
@@ -157,6 +157,7 @@ dev.off()
 # suwa.bp <- suwa[bp.opts.s[which.min(aic.suwa)],"year"]
 suwa.bp.i <- suwa[,"year"] < suwa.bp[1] # indices in units of year2
 
+aic.suwa <- AIC(suwa.bp.fit.out)
 
 
 # ================
@@ -168,10 +169,15 @@ save(suwa.bp, suwa.bp.i, aic.suwa, suwa, max.suwa, min.suwa, suwa.no.ice, file="
 # =================================
 # = Manuscript Summary Statistics =
 # =================================
-summary(vglm(doy ~ year + pmax(I(year-suwa.bp), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa))
-# year coeff = 0.0095219 
-# slope in second half = 0.0274956
+# summary(vglm(doy ~ year + pmax(I(year-suwa.bp), 0), tobit(Lower=min.suwa, Upper=max.suwa), data=suwa))
+# these first two notes were edited after data "uncorrected", which is why they don't match the days-per-decade calcs below them (those calcs were from data set used for nat comms 1st submission)
+# # year coeff = 0.0095219
+# # slope in second half = 0.0274956
+#
+# 0.046321*10 # 0.46 days per decade
+#
+# (0.046321 + 0.140514)*10 # 1.86835 days per decade
 
-0.046321*10 # 0.46 days per decade
+# year coeff = 0.039848
+# slope in second half = 0.348649 + 0.039848 = 0.388497 
 
-(0.046321 + 0.140514)*10 # 1.86835 days per decade
