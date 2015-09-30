@@ -1,6 +1,5 @@
 function [vyears, vstd, vdiff] = calcVar(years, doy)
 
-
 stride = 30;
 
 diffs = vertcat(abs(diff(doy)),0);
@@ -13,9 +12,12 @@ vdiff = nan(length(vyears), 1);
 for i=1:length(vyears)
     idx = decades == vyears(i);
     
-    if(sum(isnan(doy(idx))) <= 10)
+    if(sum(isnan(doy(idx))) <= 13)
         tmp = doy(idx);
-        vstd(i) = std(tmp(~isnan(tmp)));
+        tmp(isnan(tmp)) = 41;
+        [~,sigmahat] = normfit(tmp, 0.05, tmp==41);
+        %vstd(i) = std(tmp(~isnan(tmp)));
+        vstd(i) = sigmahat;
     end
     
     if(sum(isnan(diffs(idx))) <= 10)
