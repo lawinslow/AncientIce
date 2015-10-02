@@ -35,8 +35,10 @@ bootRes <- function(x.res, x.fit, data0, vars, Type=c("Tobit", "OLS"), n.boot=5,
 	
 	# Function that does 1 iteration of bootstrapping
 	# Notice use of scoping
+	
 	if(Type=="Tobit"){
 		boot.heart <- function(){
+			
 			# Simulate from fit
 			new.res <- as.numeric(arima.sim(model=aa.mod, n=N, sd=aa.sd))
 	

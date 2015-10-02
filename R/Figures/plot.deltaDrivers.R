@@ -8,7 +8,7 @@ library(zoo)
 # ==========
 # = Set WD =
 # ==========
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+#setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
 
 
 # ===========
@@ -20,12 +20,12 @@ se.extend <- qnorm(0.025, lower.tail=FALSE)
 # =============
 # = Load Data =
 # =============
-load("./AncientIce/Results/deltaDrivers.RData")
+load("Results/deltaDrivers.RData")
 iceTobit <- iceTobit[iceTobit[,"variable"]!="year",]
 iceTobit.s <- iceTobit.s[iceTobit.s[,"variable"]!="year",]
 iceTobit.t <- iceTobit.t[iceTobit.t[,"variable"]!="year",]
 
-load("./AncientIce/Results/tornioBP.RData")
+load("Results/tornioBP.RData")
 
 
 # ============
@@ -39,7 +39,7 @@ iceTobit.t <- iceTobit.t[!iceTobit.t[,"variable"]%in%c("aod"),]
 # ==================
 # = Load Functions =
 # ==================
-func.location <- "./AncientIce/R/Functions"
+func.location <- "R/Functions"
 invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
 
 
@@ -47,7 +47,7 @@ invisible(sapply(paste(func.location, list.files(func.location), sep="/"), sourc
 # = plot tobit coefficients =
 # ===========================
 # dev.new(width=3.5, height=5)
-png("./AncientIce/Figures/deltaDrivers.png", width=3.5, height=5, res=150, units="in")
+png("Figures/deltaDrivers.png", width=3.5, height=5, res=150, units="in")
 par(mfrow=c(2,1), mar=c(2.5, 3, 0.5, 0.5), mgp=c(1.5, 0.5, 0), tcl=-0.15, ps=9, cex=1)
 
 

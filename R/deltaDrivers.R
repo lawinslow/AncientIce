@@ -2,13 +2,13 @@
 # ===============
 # = Set Options =
 # ===============
-n.boot <- 5 #1E3
+n.boot <- 100 #1E3
 
 
 # ==================
 # = Load Functions =
 # ==================
-func.location <- "/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/R/Functions"
+func.location <- "R/Functions"
 invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
 
 
@@ -22,8 +22,8 @@ library(plyr)
 # =============
 # = Load Data =
 # =============
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tornioBP.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/suwaBP.RData")
+load("Results/tornioBP.RData")
+load("Results/suwaBP.RData")
 
 
 # ===============================================
@@ -40,7 +40,7 @@ suwa.after.i <- suwa[,"year"] >= 1923 & suwa[,"year"] <= 1997
 suwa.1 <- suwa[suwa.before.i,]
 suwa.2 <- suwa[suwa.after.i,]
 
-suwa.preds <- c("year", "co2", "enso", "air.t.as", "aod")
+suwa.preds <- c("year", "co2", "enso", "airt.march.kyoto", "aod")
 
 detrend <- function(x, method=c("ols","tobit")){
 	method <- match.arg(method)
@@ -83,7 +83,7 @@ for(i in 1:length(suwa.preds)){
 	# Bootstrap before period
 	x.res.s1 <- as.numeric(residuals(t.ts1)[,1])
 	x.fit.s1 <- as.numeric(fitted(t.ts1))
-	boot.s1 <- bootRes(x.res=x.res.s1, x.fit=x.fit.s1, data0=suwa.1, vars=suwa.preds[i], upper=max.suwa, lower=min.suwa, parallel=TRUE, n.boot=n.boot)
+	boot.s1 <- bootRes(x.res=x.res.s1, x.fit=x.fit.s1, data0=suwa.1, vars=suwa.preds[i], upper=max.suwa, lower=min.suwa, parallel=FALSE, n.boot=n.boot)
 	# iceTobit.s1[i,4] <- boot.s1[1] # use bootstrap mean
 	iceTobit.s1[i,5] <- boot.s1[2] # use bootstrap "se" (really sd)
 	
@@ -95,7 +95,7 @@ for(i in 1:length(suwa.preds)){
 	# Bootstrap the after period
 	x.res.s2 <- as.numeric(residuals(t.ts2)[,1])
 	x.fit.s2 <- as.numeric(fitted(t.ts2))
-	boot.s2 <- bootRes(x.res=x.res.s2, x.fit=x.fit.s2, data0=suwa.2, vars=suwa.preds[i], upper=max.suwa, lower=min.suwa, parallel=TRUE, n.boot=n.boot)
+	boot.s2 <- bootRes(x.res=x.res.s2, x.fit=x.fit.s2, data0=suwa.2, vars=suwa.preds[i], upper=max.suwa, lower=min.suwa, parallel=FALSE, n.boot=n.boot)
 	
 	# iceTobit.s2[i,4] <- boot.s2[1] # use bootstrap mean
 	iceTobit.s2[i,5] <- boot.s2[2] # use bootstrap se/sd
@@ -147,7 +147,7 @@ for(i in 1:length(tornio.preds)){
 	# Bootstrap the after period
 	x.res.t1 <- as.numeric(residuals(t.tt1))
 	x.fit.t1 <- as.numeric(fitted(t.tt1 ))
-	boot.t1 <- bootRes(x.res=x.res.t1, x.fit=x.fit.t1, data0=tornio.1, Type="OLS", vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=TRUE, n.boot=n.boot)
+	boot.t1 <- bootRes(x.res=x.res.t1, x.fit=x.fit.t1, data0=tornio.1, Type="OLS", vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=FALSE, n.boot=n.boot)
 	
 	
 	# do the after period
@@ -158,7 +158,7 @@ for(i in 1:length(tornio.preds)){
 	# Bootstrap the after period
 	x.res.t2 <- as.numeric(residuals(t.tt2))
 	x.fit.t2 <- as.numeric(fitted(t.tt2))
-	boot.t2 <- bootRes(x.res=x.res.t2, x.fit=x.fit.t2, data0=tornio.2, Type="OLS", vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=TRUE, n.boot=n.boot)
+	boot.t2 <- bootRes(x.res=x.res.t2, x.fit=x.fit.t2, data0=tornio.2, Type="OLS", vars=tornio.preds[i], upper=max.tornio, lower=min.tornio, parallel=FALSE, n.boot=n.boot)
 	
 }
 
@@ -256,10 +256,10 @@ summary(aov(doy ~ (aod+co2) + (aod+co2):tornio.bp.i, data=tornio2))
 # ================
 # = Save Results =
 # ================
-save(iceTobit, iceTobit.t, iceTobit.s, tornio.preds, suwa.preds, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/deltaDrivers.RData")
+save(iceTobit, iceTobit.t, iceTobit.s, tornio.preds, suwa.preds, file="Results/deltaDrivers.RData")
 
 
 # ============================================
 # = Write results of tobit analysis to table =
 # ============================================
-write.table(iceTobit, file="/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce/Results/tobit_coefficients.csv", sep=",", col.names=TRUE, row.names=FALSE)
+write.table(iceTobit, file="Results/tobit_coefficients.csv", sep=",", col.names=TRUE, row.names=FALSE)
