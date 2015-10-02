@@ -5,3 +5,4 @@
 *.Rproj
 .Rapp.history
 .DS_Store
+lib/ice_data_prep

@@ -54,6 +54,13 @@ new_data = data.frame(year=2005:2014,
                       doy=c(-2, NA, 25, NA, NA, 11, 30, 6, NA, NA))
 suwa.uncorr = rbind.fill(suwa.uncorr, new_data)
 
+
+# ===================================
+# = Add in reconstructed Kyoto City =
+# ===================================
+
+
+
 # ===============
 # = Save Output =
 # ===============
