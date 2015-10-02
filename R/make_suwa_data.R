@@ -58,8 +58,12 @@ suwa.uncorr = rbind.fill(suwa.uncorr, new_data)
 # ===================================
 # = Add in reconstructed Kyoto City =
 # ===================================
+temp_rec = read.table('data/Suwa/TempReconst7Final.txt', sep='\t', header=TRUE, skip=16)
+temp_rec = temp_rec[, c('AD', 'Estimated.temperature')]
+names(temp_rec) = c('year', 'airt.march.kyoto')
+temp_rec$airt.march.kyoto[temp_rec$airt.march.kyoto == -50] = NA
 
-
+suwa.uncorr = merge(suwa.uncorr, temp_rec, all.x=TRUE)
 
 # ===============
 # = Save Output =
