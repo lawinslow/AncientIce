@@ -29,4 +29,8 @@ end
 
 vyears = vyears + (stride/2);
 
+vstd   = vstd(vyears < max(years));
+vdiff  = vdiff(vyears < max(years));
+vyears = vyears(vyears < max(years));
+
 end

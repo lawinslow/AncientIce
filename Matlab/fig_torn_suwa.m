@@ -162,9 +162,9 @@ suwa = (d(:,3));
 addpath('wtc');
 
 %% do wavelet calculations
-cutoff_year = 1812;
-suwa_early = suwa(time >= 1581 & time <= 1655);
-time_early = time(time >= 1581 & time <= 1655);
+cutoff_year = 1300;
+suwa_early = suwa(time >= 1443 & time <= 1681);
+time_early = time(time >= 1443 & time <= 1681);
 suwa_late  = suwa(time >= 1923 & time <= 2014);
 time_late  = time(time >= 1923 & time <= 2014);
 
@@ -174,7 +174,7 @@ time_late  = time(time >= 1923 & time <= 2014);
 %------------------------------------------------------ Plotting
 
 %% contour plot wavelet power spectrum
-xlim = [1443,2014];  % plotting range
+xlim = [1443,2016];  % plotting range
 
 subleft = 0.05+0.4*(min(xlim)-1443)/(2013-1443);
 subright = 0.4*range(xlim)/(2013-1443);
@@ -227,7 +227,7 @@ set(gca,'YLim',log2([min(period),64]), ...
 	'YDir','reverse', ...
 	'YTick',log2(Yticks(:)), ...
 	'YTickLabel','')
-set(gca,'XLim',[0,1000])
+set(gca,'XLim',[0,2000])
 gTextBold(gca, 'E', 0.05, 0.95, 'none');
 
 %% subplot variability
@@ -240,8 +240,9 @@ hold all;
 %plot(vyears, vdiff, 'o-', 'linewidth', 2);
 ylabel('Variability (days)');
 %legend({'SD', 'Mean-diff'});
+set(gca,'XLim',[1443        2014]);
 
 gTextLeftBold(gca, 'A', 0.025, 0.05, 'none');
 
 %% export
-%export_fig('../Figures/suwa.torn.wave.and.var.tiff','-r300');
+export_fig('../Figures/suwa.torn.wave.and.var.tiff','-r300');
