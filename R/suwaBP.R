@@ -96,13 +96,6 @@ suwa.bp.nll <- function(bps, ...){
 dom <- matrix(c(10,nrow(suwa)-11, 11, nrow(suwa)-10), ncol=2, byrow=TRUE)
 suwa.bp.genoud <- genoud(suwa.bp.nll, 2, pop.size=50, max.generations=50, data.type.int=TRUE, Domains=dom, boundary.enforcement=2, method="VGAM") 
 
-# (test1 <- suwa.bp.nll(c(358,458))) # corresponds to 1800 and 1900
-# (test2 <- suwa.bp.nll(c(369,458))) # corresponds to 1811 and 1900
-# (test3 <- suwa.bp.nll(c(369,431))) # corresponds to 1811 and 1873)
-# (test4 <- suwa.bp.nll(c(375,451))) # corresponds to 1817 and 1893); from a quick optimization routine
-# test4.fit <- suwa.bp.fit(bps=c(375, 451))
-# png("~/Desktop/residualsTobitSuwa.png");qqnorm(resid(test4.fit, type="pearson")[,1]);qqline(resid(test4.fit, type="pearson")[,1]);dev.off()
-
 
 suwa.bp <- suwa.bp.genoud$par
 suwa.bp.fit.out <- suwa.bp.fit(bps=suwa.bp)
