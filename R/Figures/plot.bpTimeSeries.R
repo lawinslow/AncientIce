@@ -8,14 +8,15 @@ library(VGAM)
 # ==========
 # = Set WD =
 # ==========
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
 
 
 # ================
 # = Load Results =
 # ================
-load("./AncientIce/Results/tornioBP.RData")
-load("./AncientIce/Results/suwaBP.RData")
+load("./Results/tornioBP.RData")
+# load("./AncientIce/Results/suwaBP.RData")
+load("./Results/Suwa_BeforeAfter.RData")
 
 
 # =======================
@@ -59,7 +60,7 @@ tornio[,"bp.pred"] <- as.numeric(predict(tt.year, newdata=tornio))
 # myBlue <- rgb(t(col2rgb("blue", alpha=TRUE)), alpha=75, maxColorValue=256)
 # sNFcc <- c(myBlue,myRed)[(!suwa.bp.i[suwa.no.ice])+1] # suwa No Freeze color code
 
-png("./AncientIce/Figures/timeSeriesBP.png", width=3.5, height=5, res=150, units="in")
+png("./Figures/timeSeriesBP.png", width=3.5, height=5, res=150, units="in")
 par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1)
 
 # plot(suwa.y[,"year"], suwa.y[,"doy"], type="l", xlab="", ylab="Ice Formation Day of Year")
@@ -69,28 +70,38 @@ par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.
 # points(suwa.y[suwa.no.ice,"year"], rep(max.suwa, sum(suwa.no.ice)), pch=23, bg=sNFcc, col=NA, cex=0.9)
 # points(suwa.y[suwa.isolObs,"year"], suwa.y[suwa.isolObs,"doy"], pch=20, cex=0.25) # plot observations that have a missing or no-freeze year on either side of it (thus would not show up as line, b/c line must have at least 2 observations in a row)
 
-suwa.doy <- suwa[,"doy"]
-suwa.year <- suwa[,"year"]
-suwa.doyNA <- suwa.doy
-suwa.doyNA[suwa.doy>=max.suwa] <- NA
-plot(suwa.year, suwa.doyNA, col="lightgray", ylim=c(min(suwa.doy, na.rm=T), max.suwa), type="l")
-points(suwa.year, suwa.doy, pch=20)
+# suwa.doy <- suwa[,"doy"]
+# suwa.year <- suwa[,"year"]
+# suwa.doyNA <- suwa.doy
+# suwa.doyNA[suwa.doy>=max.suwa] <- NA
+# plot(suwa.year, suwa.doyNA, col="lightgray", ylim=c(min(suwa.doy, na.rm=T), max.suwa), type="l")
+# points(suwa.year, suwa.doy, pch=20)
 
-plot.suwaFit <- function(suwa.ci){
+plot.suwaFit <- function(ci){
 	
 	lp <- c("fitted","upr","lwr")
 	lc <- c("black","blue","blue")
 	
-	for(i in 0:1){
+	# for(i in 0:1){
 		for(j in 1:3){
-			lines(suwa.ci[x2==i,"year"], suwa.ci[x2==i,lp[j]], col=lc[j], lwd=2)
+			lines(ci[,"year"], ci[,lp[j]], col=lc[j], lwd=2)
 		}
-	}
+	# }
 	
 }
-plot.suwaFit(suwa.ci)
 
-text(min(suwa.year), max(suwa.doy, na.rm=TRUE), "A", font=2, cex=1)
+suwa.pch <- 20
+
+plot(suwa[suwa.early.index,c("year","doy")], ylab="Ice Formation Day of Year", xlab="", xlim=range(suwa[,"year"], na.rm=T), ylim=range(suwa[,"doy"], na.rm=T), pch=suwa.pch)
+plot.suwaFit(suwa.ci.early)
+
+points(suwa[suwa[,"period"]=="extremeOnly"&suwa[,"no.ice"]==1,c("year","doy")], pch=suwa.pch)
+points(suwa[suwa[,"period"]=="extremeOnly"&suwa[,"no.ice"]==0,c("year","doy")], col="gray", pch=suwa.pch)
+
+points(suwa[suwa.late.index,c("year","doy")], pch=suwa.pch)
+plot.suwaFit(suwa.ci.late)
+
+text(min(suwa[,"year"]), max(suwa[,"doy"], na.rm=TRUE), "A", font=2, cex=1)
 
 
 #
@@ -114,8 +125,9 @@ text(min(suwa.year), max(suwa.doy, na.rm=TRUE), "A", font=2, cex=1)
 
 tornio.doy <- tornio[,"doy"]
 tornio.year <- tornio[,"year"]
-plot(tornio.year, tornio.doy, col="lightgray", ylim=c(min(tornio.doy, na.rm=T), max.tornio), type="l")
-points(tornio.year, tornio.doy, pch=20)
+# plot(tornio.year, tornio.doy, col="lightgray", ylim=c(min(tornio.doy, na.rm=T), max.tornio), type="l")
+plot(tornio.year, tornio.doy, ylim=c(min(tornio.doy, na.rm=T), max.tornio), pch=suwa.pch, ylab="Ice Breakup Day of Year", xlab="")
+# points(tornio.year, tornio.doy, pch=20)
 
 plot.tornioFit <- function(tornio.ci){
 	
@@ -131,6 +143,8 @@ plot.tornioFit <- function(tornio.ci){
 plot.tornioFit(tornio.ci)
 
 text(min(tornio[,"year"]), max(tornio[,"doy"], na.rm=TRUE), "B", font=2, cex=1)
+
+mtext("Year", side=1, line=1.25)
 
 dev.off()
 
