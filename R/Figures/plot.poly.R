@@ -8,14 +8,16 @@ library(VGAM)
 # ==========
 # = Set WD =
 # ==========
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+if(Sys.info()[["user"]]%in%c("ryanb","Battrd")){
+	setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
+}
 
 
 # ================
 # = Load Results =
 # ================
-load("./AncientIce/Results/tornioBP.RData")
-load("./AncientIce/Results/suwaBP.RData")
+load("./Results/tornioBP.RData")
+load("./Results/suwaBP.RData")
 
 
 # ===================
@@ -60,7 +62,7 @@ tornio[,"poly.pred"] <- as.numeric(predict(poly.tornio, newdata=tornio))
 myGray <- rgb(t(col2rgb("black", alpha=TRUE)), alpha=75, maxColorValue=256)
 
 
-png("./AncientIce/Figures/timeSeriesPoly.png", width=3.5, height=5, res=150, units="in")
+png("./Figures/timeSeriesPoly.png", width=3.5, height=5, res=150, units="in")
 # dev.new(width=3.5, height=5)
 par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1, family="Times")
 

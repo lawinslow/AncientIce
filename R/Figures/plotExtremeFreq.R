@@ -2,13 +2,16 @@
 # ==========
 # = Set WD =
 # ==========
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+if(Sys.info()[["user"]]%in%c("ryanb","Battrd")){
+	setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
+}
+
 
 # ================
 # = Load Results =
 # ================
-load("./AncientIce/Results/tornioBP.RData")
-load("./AncientIce/Results/suwaBP.RData")
+load("./Results/tornioBP.RData")
+load("./Results/suwaBP.RData")
 
 
 # ======================================
@@ -40,7 +43,7 @@ dcast(ef, freq~period+system)
 
 
 # dev.new(width=4.5, height=3.5)
-png("./AncientIce/Figures/extremeFrequency.png", width=4.5, height=3.5, res=150, units="in")
+png("./Figures/extremeFrequency.png", width=4.5, height=3.5, res=150, units="in")
 par(mar=c(2.15, 2, 0.1, 0.1), mgp=c(1.25, 0.15, 0), tcl=-0.15, cex=1, ps=8)
 barFig <- barplot(
 	t(ef), 

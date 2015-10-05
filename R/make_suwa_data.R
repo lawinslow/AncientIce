@@ -4,9 +4,10 @@ library(plyr)
 # ==========
 # = Set WD =
 # ==========
-#argh absolute paths
-# setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
-#ice.new <- read.table("./AncientIce/lib/ice_data_prep/data/suwa_prepared_analysis_data.csv", sep=",", header=TRUE)
+if(Sys.info()[["user"]]%in%c("ryanb","Battrd")){
+	setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
+}
+
 
 #pull from web (could change this to pull from submodule, but I always have trouble with them)
 ice.new <- read.csv('lib/ice_data_prep/data/suwa_prepared_analysis_data.csv', header=TRUE, as.is=TRUE)

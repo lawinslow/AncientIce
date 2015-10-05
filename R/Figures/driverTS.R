@@ -1,8 +1,11 @@
 
+
 # ==========
 # = Set WD =
 # ==========
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch") # for ryan
+if(Sys.info()[["user"]]%in%c("ryanb","Battrd")){
+	setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
+}
 
 
 # ===============
@@ -14,7 +17,7 @@ n.boot <- 1E3
 # ==================
 # = Load Functions =
 # ==================
-func.location <- "./AncientIce/R/Functions"
+func.location <- "./R/Functions"
 invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
 
 
@@ -28,9 +31,9 @@ library(plyr)
 # =============
 # = Load Data =
 # =============
-load("./AncientIce/Results/tornioBP.RData")
-load("./AncientIce/Results/suwaBP.RData")
-load("./AncientIce/Results/deltaDrivers.RData")
+load("./Results/tornioBP.RData")
+load("./Results/suwaBP.RData")
+load("./Results/deltaDrivers.RData")
 
 
 # ==================

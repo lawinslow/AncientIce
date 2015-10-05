@@ -7,23 +7,26 @@ library(VGAM)
 library(rgenoud)
 library(MCMCpack)
 
+
 # ==========
 # = Set WD =
 # ==========
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
+if(Sys.info()[["user"]]%in%c("ryanb","Battrd")){
+	setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
+}
 
 
 # ==================
 # = Load Functions =
 # ==================
-func.location <- "R/Functions"
+func.location <- "./R/Functions"
 invisible(sapply(paste(func.location, list.files(func.location), sep="/"), source, .GlobalEnv))
 
 
 # =============
 # = Load Data =
 # =============
-suwa <- read.table("Data/suwa.tsv", sep="\t", header=TRUE)
+suwa <- read.table("./Data/suwa.tsv", sep="\t", header=TRUE)
 max.suwa <- max(suwa[,"doy"], na.rm=TRUE)
 min.suwa <- -Inf #min(suwa[,"doy"], na.rm=TRUE)
 
