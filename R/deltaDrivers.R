@@ -34,8 +34,8 @@ useDetrend <- TRUE # whether or not to detrend DoY and covariate time series
 suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1655 # T/F index vector for early period in Suwa
 suwa.after.i <- suwa[,"year"] >= 1923 & suwa[,"year"] <= 1997 # T/F for late period
 
-suwa.preds <- c("year", "co2", "enso", "airt.march.kyoto", "aod") # Suwa covariates
-tornio.preds <- c("year", "co2", "nao.djfm", "air.t.stock", "aod", "sunspots") # Tornio Covariates
+suwa.preds <- c( "airt.march.kyoto", "co2", "enso") # Suwa covariates
+tornio.preds <- c("air.t.stock", "co2", "nao.djfm", "sunspots") # Tornio Covariates
 # tornio.preds <- c("year", "co2", "nao.djfm", "air.t.mam", "aod", "sunspots") # Tornio Covariates, using local air temp, which has much shorter time series that stockholm temp
 
 
