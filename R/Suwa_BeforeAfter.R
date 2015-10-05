@@ -43,7 +43,7 @@ suwa[,"year2"] <- 1:nrow(suwa)
 # =====================
 # = Define Early Late =
 # =====================
-suwa.early.year <- c(min(suwa[,"year"]), 1655)
+suwa.early.year <- c(min(suwa[,"year"]), 1683)
 suwa.late.year <- c(1923, max(suwa[,"year"]))
 
 suwa.early.index <- suwa[,"year"]<=suwa.early.year[2]
@@ -97,6 +97,16 @@ get.suwa.ci <- function(model, data){
 
 suwa.ci.early <- get.suwa.ci(suwa.tobit.early, suwa[suwa.early.index,])
 suwa.ci.late <- get.suwa.ci(suwa.tobit.late, suwa[suwa.late.index,])
+
+
+# ================================
+# = Suwa Slopes -- Before, After =
+# ================================
+(suwa.slope.early <- suwa.tobit.early@coefficients["year"])
+cat("Early period:",(suwa.slope.early * 10), "days per decade")
+
+(suwa.slope.late <- suwa.tobit.late@coefficients["year"])
+cat("Late period:",(suwa.slope.late * 10), "days per decade")
 
 
 # =============================

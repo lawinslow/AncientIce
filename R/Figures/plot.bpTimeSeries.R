@@ -61,6 +61,8 @@ points(suwa[suwa[,"period"]=="extremeOnly"&suwa[,"no.ice"]==0,c("year","doy")], 
 points(suwa[suwa.late.index,c("year","doy")], pch=suwa.pch)
 plot.suwaFit(suwa.ci.late)
 
+points(suwa[suwa[,"no.ice"]==1,c("year","doy")], pch=suwa.pch, cex=0.25, col="white")
+
 text(min(suwa[,"year"]), max(suwa[,"doy"], na.rm=TRUE), "A", font=2, cex=1)
 
 
