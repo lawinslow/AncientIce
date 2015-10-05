@@ -1,9 +1,6 @@
 
-# ===============
-# = Set Options =
-# ===============
-n.boot <- 1E3
-useParallel <- TRUE
+# Note: Why not use the mean of the bootstrapped runs as the mean value reported in the text?
+# http://stats.stackexchange.com/questions/71357/why-not-report-the-mean-of-a-bootstrap-distribution
 
 
 # ==================
@@ -27,52 +24,67 @@ load("./Results/tornioBP.RData")
 load("./Results/Suwa_BeforeAfter.RData")
 
 
+# ===============
+# = Set Options =
+# ===============
+n.boot <- 1E3 # number of bootstrap iterations
+useParallel <- TRUE # whether to use parallel in ddply
+useDetrend <- TRUE # whether or not to detrend DoY and covariate time series
+
+suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1655 # T/F index vector for early period in Suwa
+suwa.after.i <- suwa[,"year"] >= 1923 & suwa[,"year"] <= 1997 # T/F for late period
+
+suwa.preds <- c("year", "co2", "enso", "airt.march.kyoto", "aod") # Suwa covariates
+tornio.preds <- c("year", "co2", "nao.djfm", "air.t.stock", "aod", "sunspots") # Tornio Covariates
+# tornio.preds <- c("year", "co2", "nao.djfm", "air.t.mam", "aod", "sunspots") # Tornio Covariates, using local air temp, which has much shorter time series that stockholm temp
+
+
+
+# ========
+# = SUWA =
+# ========
 # ===============================================
 # = Suwa: Run Tobit before and after breakpoint =
 # ===============================================
-# suwa.1 <- suwa[suwa.bp.i,]
-# suwa.2 <- suwa[!suwa.bp.i,]
-# suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1681
-# suwa.after.i <- suwa[,"year"] >= 1897 & suwa[,"year"] <= 1997
-
-suwa.before.i <- suwa[,"year"] >= 1581 & suwa[,"year"] <= 1655
-suwa.after.i <- suwa[,"year"] >= 1923 & suwa[,"year"] <= 1997
-
 suwa.1 <- suwa[suwa.before.i,]
 suwa.2 <- suwa[suwa.after.i,]
 
-suwa.preds <- c("year", "co2", "enso", "airt.march.kyoto", "aod")
 
-detrend <- function(x, method=c("ols","tobit")){
-	method <- match.arg(method)
-	n <- length(x)
-	time <- 1:n
-	
-	# if(method=="ols"){
-	# 	residuals(lm(x~time))
-	# }
-	
-	if(method=="tobit"){
-		residuals(vglm(x~time, tobit(Lower=min.suwa, Upper=max.suwa), na.action=na.exclude))[,1]
-	}else{
-		residuals(lm(x~time, na.action=na.exclude))
-	}
-	
-}
-
-
+# ============================
+# = Rescale and Detrend Suwa =
+# ============================
+# Rescale and (optionally) Detrend Suwa Covariates
 for(i in 1:length(suwa.preds)){
-	# suwa.1[,suwa.preds[i]] <- scale((suwa.1[,suwa.preds[i]]))
-	# suwa.2[,suwa.preds[i]] <- scale((suwa.2[,suwa.preds[i]]))
-	suwa.1[,suwa.preds[i]] <- scale(detrend(suwa.1[,suwa.preds[i]]))
-	suwa.2[,suwa.preds[i]] <- scale(detrend(suwa.2[,suwa.preds[i]]))
+	
+	if(useDetrend){
+		suwa.1[,suwa.preds[i]] <- scale(detrend(suwa.1[,suwa.preds[i]]))
+		suwa.2[,suwa.preds[i]] <- scale(detrend(suwa.2[,suwa.preds[i]]))
+	}else{
+		suwa.1[,suwa.preds[i]] <- scale((suwa.1[,suwa.preds[i]]))
+		suwa.2[,suwa.preds[i]] <- scale((suwa.2[,suwa.preds[i]]))
+	}
+
 }
-suwa.1[,"doy"] <- detrend(suwa.1[,"doy"], method="tobit")
-suwa.2[,"doy"] <- detrend(suwa.2[,"doy"], method="tobit")
+
+# Detrend Suwa DoY Time Series
+if(useDetrend){
+	suwa.1[,"doy"] <- detrend(suwa.1[,"doy"], method="tobit")
+	suwa.2[,"doy"] <- detrend(suwa.2[,"doy"], method="tobit")
+}else{
+	
+}
 
 
+# ========================================
+# = Set Up Objects to Store Suwa Results =
+# ========================================
 iceTobit.s1 <- data.frame("water"=NA, "period"=NA, "variable"=NA, "estimate"=NA, "stdE"=NA, "Z"=NA)
 iceTobit.s2 <- data.frame("water"=NA, "period"=NA, "variable"=NA, "estimate"=NA, "stdE"=NA, "Z"=NA)
+
+
+# =================================================
+# = Do Suwa Before-After Regression w/ Covariates =
+# =================================================
 for(i in 1:length(suwa.preds)){
 	t.ts.formula <- as.formula(paste("doy~", paste(suwa.preds[i], collapse="+"), sep=""))
 	
@@ -101,42 +113,69 @@ for(i in 1:length(suwa.preds)){
 	# iceTobit.s2[i,4] <- boot.s2[1] # use bootstrap mean
 	iceTobit.s2[i,5] <- boot.s2[2] # use bootstrap se/sd
 
-	
 }
+
+
+# ========================
+# = Collect Suwa Results =
+# ========================
 iceTobit.s <- rbind(iceTobit.s1, iceTobit.s2)
 iceTobit.s[,"estimate"] <- as.numeric(iceTobit.s[,"estimate"])
 iceTobit.s[,"stdE"] <- as.numeric(iceTobit.s[,"stdE"])
 iceTobit.s[,"Z"] <- as.numeric(iceTobit.s[,"Z"])
 
+
+# =====================
+# = Get Suwa P-Values =
+# =====================
 iceTobit.s <- ddply(iceTobit.s, "variable", getP)
 
 
 
-# ===============================================
-# = Tornio: Run Tobit before and after breakpoint =
-# ===============================================
-# tornio.1 <- tornio[tornio.bp.i,]
-# tornio.2 <- tornio[!tornio.bp.i,]
-
-# tornio.before.i <- tornio[,"year"] >= 1803 & tornio[,"year"] <= 1866
-# tornio.after.i <- tornio[,"year"] >= 1937 & tornio[,"year"] <= 2000
-
+# ==========
+# = TORNIO =
+# ==========
+# =======================================
+# = Define Tornio Before and After Data =
+# =======================================
 tornio.1 <- tornio[tornio.bp.i,]
 tornio.2 <- tornio[!tornio.bp.i,]
 
-tornio.preds <- c("year", "co2", "nao.djfm", "air.t.mam", "aod", "sunspots")
+
+# =====================================================
+# = Rescale and (optionally) Detrend Tornio and Cov's =
+# =====================================================
+# Rescale and Detrend Tornio Covariates
 for(i in 1:length(tornio.preds)){
-	# tornio.1[,tornio.preds[i]] <- scale(tornio.1[,tornio.preds[i]])
-	# tornio.2[,tornio.preds[i]] <- scale(tornio.2[,tornio.preds[i]])
-	tornio.1[,tornio.preds[i]] <- scale(detrend(tornio.1[,tornio.preds[i]]))
-	tornio.2[,tornio.preds[i]] <- scale(detrend(tornio.2[,tornio.preds[i]]))
+	if(useDetrend){
+		tornio.1[,tornio.preds[i]] <- scale(detrend(tornio.1[,tornio.preds[i]]))
+		tornio.2[,tornio.preds[i]] <- scale(detrend(tornio.2[,tornio.preds[i]]))
+	}else{
+		tornio.1[,tornio.preds[i]] <- scale(tornio.1[,tornio.preds[i]])
+		tornio.2[,tornio.preds[i]] <- scale(tornio.2[,tornio.preds[i]])
+	}
+
 }
-tornio.1[,"doy"] <- detrend(tornio.1[,"doy"])
-tornio.2[,"doy"] <- detrend(tornio.2[,"doy"])
+
+# Optionally Detrend Tornio DoY time series
+if(useDetrend){
+	tornio.1[,"doy"] <- detrend(tornio.1[,"doy"])
+	tornio.2[,"doy"] <- detrend(tornio.2[,"doy"])
+}else{
+	
+}
 
 
+# ==========================================
+# = Set Up Objects to Store Tornio Results =
+# ==========================================
 iceTobit.t1 <- data.frame("water"=NA, "period"=NA, "variable"=NA, "estimate"=NA, "stdE"=NA, "Z"=NA)
 iceTobit.t2 <- data.frame("water"=NA, "period"=NA, "variable"=NA, "estimate"=NA, "stdE"=NA, "Z"=NA)
+
+
+# ================================================
+# = Run Regression for Each of Tornio Predictors =
+# ================================================
 for(i in 1:length(tornio.preds)){
 	t.tt.formula <- as.formula(paste("doy~", paste(tornio.preds[i], collapse="+"), sep=""))
 	
@@ -163,14 +202,20 @@ for(i in 1:length(tornio.preds)){
 	
 }
 
+
+# ==========================
+# = Collect Tornio Results =
+# ==========================
 iceTobit.t <- rbind(iceTobit.t1, iceTobit.t2)
 iceTobit.t[,"estimate"] <- as.numeric(iceTobit.t[,"estimate"])
 iceTobit.t[,"stdE"] <- as.numeric(iceTobit.t[,"stdE"])
 iceTobit.t[,"Z"] <- as.numeric(iceTobit.t[,"Z"])
 
 
+# =======================
+# = Get Tornio P-Values =
+# =======================
 iceTobit.t <- ddply(iceTobit.t, "variable", getP)
-
 
 
 # ===========================
@@ -196,36 +241,7 @@ iceTobit <- iceTobit[order(iceTobit[,"water"], iceTobit[,"variable"]),] # order
 # Thus FDR is about maintaining the same % of false discoveries, whereas  family wise error rate (FWER) is about the same number of false discoveries (FWER is the probability of making a certain number of false discoveries, usually 1).
 # As a result, the BH method is always going to be the least conservative p-value correction
 
-adjP <- function(x, checkDup=TRUE){
-	require(multcomp)
-	
-	# define methods
-	meths <- c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "none")
-	
-	# check duplicates
-	if(checkDup){
-		x0 <- x
-		x <- unique(x)
-	}
-	
-	# create container
-	ps <- matrix(NA, ncol=length(meths), nrow=length(x), dimnames=list(NULL, meths))
-	
-	# perform all corrections
-	for(i in 1:length(meths)){
-		ps[,i] <- p.adjust(x, method=meths[i])
-	}
-	
-	# prepare output
-	if(checkDup){
-		blah <- data.frame(id=x0)
-		blah2 <- merge(data.frame(id=x, ps), blah, all=TRUE, sort=FALSE)
-		blah2[,-1]
-	}else{
-		ps
-	}
-	
-}
+
 
 # Check Tornio
 cbind(iceTobit.t[-7], adjP(iceTobit.t[,7])) # note that under no form of correction can a pair of tornio coefficients be considered different
