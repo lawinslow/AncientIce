@@ -112,5 +112,5 @@ cat("Late period:",(suwa.slope.late * 10), "days per decade")
 # =============================
 # = Save Before After Results =
 # =============================
-save(suwa, suwa.ci.early, suwa.ci.late, suwa.early.index, suwa.late.index, file="./Results/Suwa_BeforeAfter.RData")
+save(suwa, suwa.ci.early, suwa.ci.late, suwa.early.index, suwa.late.index, min.suwa, max.suwa, file="./Results/Suwa_BeforeAfter.RData")
 
