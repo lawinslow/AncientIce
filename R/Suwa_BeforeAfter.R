@@ -104,10 +104,11 @@ suwa.ci.late <- get.suwa.ci(suwa.tobit.late, suwa[suwa.late.index,])
 # ================================
 (suwa.slope.early <- suwa.tobit.early@coefficients["year"])
 cat("Early period:",(suwa.slope.early * 10), "days per decade")
+# Early period: 0.1934544 days per decade
 
 (suwa.slope.late <- suwa.tobit.late@coefficients["year"])
 cat("Late period:",(suwa.slope.late * 10), "days per decade")
-
+# Late period: 4.606225 days per decade
 
 # =============================
 # = Save Before After Results =
