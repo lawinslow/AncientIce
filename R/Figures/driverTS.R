@@ -65,7 +65,9 @@ for(i in 1:6){
 # =====================================================
 # = Function To Plot Ice Date and Transformed Drivers =
 # =====================================================
-plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lake.name, before.col="blue", after.col="red"){
+plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lake.name, before.col="blue", after.col="red", model.type=c("ols","tobit")){
+	
+	model.type <- match.arg(model.type)
 
 	# Functions for Plotting Schema
 	plot.befAft.ts <- function(before.y, after.y, ylab=""){
@@ -87,14 +89,14 @@ plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lak
 	layout(plot.dim)
 	par(mar=c(1.75,1.75,0.5,0.1), oma=c(0.1, 0.1, 0.1, 0.1), cex=1, ps=8, mgp=c(0.75,0.05,0), tcl=-0.1)
 
-	# get Suwa before and after years
-	before.years <- suwa[before.i, c("year")]
-	after.years <- suwa[after.i, c("year")]
+	# get before and after years
+	before.years <- data[before.i, c("year")]
+	after.years <- data[after.i, c("year")]
 	both.years <- c(before.years, after.years)
 
-	# Plot normal suwa ice-on dates
-	before.doy <- suwa[before.i, c("doy")]
-	after.doy <- suwa[after.i, c("doy")]
+	# Plot normal ice-on dates
+	before.doy <- data[before.i, c("doy")]
+	after.doy <- data[after.i, c("doy")]
 	doy <- c(before.doy, after.doy)
 
 
@@ -104,8 +106,8 @@ plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lak
 	mtext(paste(lake.name), side=3, line=0, font=2)
 
 	# Plot Driver Time Series
-	driver.before <- suwa[before.i, c(driver.col)]
-	driver.after <- suwa[after.i, c(driver.col)]
+	driver.before <- data[before.i, c(driver.col)]
+	driver.after <- data[after.i, c(driver.col)]
 	driver <- c(driver.before, driver.after)
 	plot.befAft.ts(driver.before, driver.after, ylab="Raw Driver")
 	mtext(driver.name, side=3, line=0, font=2)
@@ -120,8 +122,8 @@ plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lak
 	plot.befAft.ts(driver.before.detrend, driver.after.detrend, ylab="Detrended Driver")
 
 	# Detrend Ice Date
-	before.doy.detrend <- detrend(before.doy, "tobit")
-	after.doy.detrend <- detrend(after.doy, "tobit")
+	before.doy.detrend <- detrend(before.doy, model.type)
+	after.doy.detrend <- detrend(after.doy, model.type)
 	doy.detrend <- c(before.doy.detrend, after.doy.detrend)
 
 	# Plot Detrended Ice Date vs Detrended Driver
@@ -138,8 +140,22 @@ plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lak
 }
 
 
+pdf("./Figures/transformedDrivers_IceDate.pdf")
 
-# Plot Suwa Ice and Kyoto Air T
-plot.driverIce(data = suwa, before.i = suwa.before.i, after.i = suwa.after.i, driver.col = "airt.march.kyoto", driver.name = "Kyoto Air T", lake.name = "Lake Suwa", before.col = "blue", after.col = "red")
+# Suwa
+pred.names <- c("Kyoto Air T", "CO2", "ENSO")
+for(i in 1:length(suwa.preds)){
+	t.pred <- suwa.preds[i]
+	plot.driverIce(data = suwa, before.i = suwa.before.i, after.i = suwa.after.i, driver.col = t.pred, driver.name = pred.names[i], lake.name = "Lake Suwa", before.col = "blue", after.col = "red", model.type="tobit")
+}
+
+# Torne
+pred.names <- c("Stockholm Air T", "CO2", "NAO", "Sunspots")
+for(i in 1:length(tornio.preds)){
+	t.pred <- tornio.preds[i]
+	plot.driverIce(data = tornio, before.i = tornio.bp.i, after.i = !tornio.bp.i, driver.col = t.pred, driver.name = pred.names[i], lake.name = "River Torne", before.col = "blue", after.col = "red", model.type="ols")
+}
+
+dev.off()
 
 
