@@ -23,7 +23,10 @@ invisible(sapply(paste(func.location, list.files(func.location), sep="/"), sourc
 # = Tornio BP Alternatives =
 # ==========================
 AIC(lm(doy ~ year, data=tornio)) # No BP, just trend AIC = 2155.825
-AIC(lm(doy ~ year + I(year^2), data=tornio)) # No BP, just trend AIC = 2154.881
+AIC(lm(doy ~ year + I(year^2), data=tornio)) # No BP, second-order polynomial AIC = 2154.881
+
+BIC(lm(doy ~ year, data=tornio)) # No BP, just trend BIC = 2167.139
+BIC(lm(doy ~ year + I(year^2), data=tornio)) # No BP, second-order polynomial BIC = 2169.967
 
 
 # ==========
@@ -106,11 +109,31 @@ tornio.se.fit[,"lwr"] <- tornio.se.fit[,"fitted"] - tornio.se.fit[,1]*1.96
 
 tornio.ci <- merge(tornio.ci, tornio.se.fit, by="year", all=TRUE)
 
+# ============================================
+# = Alternatively, get CI using auto.arima() =
+# ============================================
+# accounts for residual autocorrelation
+# x1 <- pmax(I(t.tornio[,"year"]-tornio.bp),0)
+# tornio.bp.fit.out.aa <- auto.arima(tornio[,"doy"], xreg=cbind(year=tornio[,"year"], x1=x1)) # could do this if I want to take care of autocorrelation in the residuals of the time series ...
+#
+# tornio.ci.aa <- data.frame("year"=tornio[,"year"], "doy"=tornio[,"doy"])
+# newxreg <- data.frame("year"=tornio[,"year"], x1=x1)
+#
+# tornio.se.fit.aa <- data.frame(se.fit=predict(tornio.bp.fit.out.aa, newxreg=newxreg, se.fit=TRUE, na.action=na.exclude)$se.fit)
+# tornio.se.fit.aa[,"year"] <- tornio[,"year"][as.integer(row.names(tornio.se.fit.aa))]
+# tornio.se.fit.aa[,"fitted"] <- predict(tornio.bp.fit.out.aa, newxreg=newxreg, se.fit=TRUE)$fit
+# # tornio.se.fit[,"se"] <- tornio.se.fit[,2]
+# tornio.se.fit.aa[,"upr"] <- tornio.se.fit.aa[,"fitted"] + tornio.se.fit.aa[,1]*1.96
+# tornio.se.fit.aa[,"lwr"] <- tornio.se.fit.aa[,"fitted"] - tornio.se.fit.aa[,1]*1.96
+#
+# tornio.ci.aa <- merge(tornio.ci.aa, tornio.se.fit.aa, by="year", all=TRUE)
+
+
 
 # ================
 # = Save Results =
 # ================
-save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, aic.tornio2,bp.opts.t2, tornio.ci, file="./Results/tornioBP.RData")
+save(tornio.bp, tornio.bp.i, aic.tornio, tornio, min.tornio, max.tornio, bp.opts.t, aic.tornio2,bp.opts.t2, tornio.ci, tornio.bp.fit.out, file="./Results/tornioBP.RData")
 
 
 
