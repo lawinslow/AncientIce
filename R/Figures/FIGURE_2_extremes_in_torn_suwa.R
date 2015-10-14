@@ -37,8 +37,10 @@ png('Figures/figure2.png', height=2500, width=2500, res=300)
 par(mfrow=c(2,1), mar=c(2.5,0,0,0), oma=c(0, 5, 1, 0.1), family='sans')
 
 barplot(suwa_extreme, names.arg=suwa_names, col='black', ylim=c(0, 0.35))
+text(x=0.5, y=0.32, "A", font=2, cex=1.25)
 #axis(1,labels=FALSE, lwd.ticks=0)
 barplot(torn_extreme, ylim=c(0,0.35), names.arg=torn_names)
+text(x=0.5, y=0.32, "B", font=2, cex=1.25)
 
 par(mfrow=c(1,1))
 mtext("Proportion of extreme events      ", side=2, line=3, cex = 1.5)
