@@ -52,7 +52,7 @@ plot.suwaFit <- function(ci){
 
 suwa.pch <- 20
 
-plot(suwa[suwa.early.index,c("year","doy")], ylab="Ice Formation Day of Year", xlab="", xlim=range(suwa[,"year"], na.rm=T), ylim=range(suwa[,"doy"], na.rm=T), pch=suwa.pch)
+plot(suwa[suwa.early.index,c("year","doy")], ylab="Ice Freeze Day of Year", xlab="", xlim=range(suwa[,"year"], na.rm=T), ylim=range(suwa[,"doy"], na.rm=T), pch=suwa.pch)
 plot.suwaFit(suwa.ci.early)
 
 points(suwa[suwa[,"period"]=="extremeOnly"&suwa[,"no.ice"]==1,c("year","doy")], pch=suwa.pch)
