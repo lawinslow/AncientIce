@@ -8,7 +8,7 @@ library(zoo)
 # ==========
 # = Set WD =
 # ==========
-if(Sys.info()[["user"]]%in%c("ryanb","Battrd")){
+if(Sys.info()[["user"]]%in%c("ryanb","Battrd","battrd")){
 	setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
 }
 
@@ -50,7 +50,7 @@ invisible(sapply(paste(func.location, list.files(func.location), sep="/"), sourc
 # ===========================
 # dev.new(width=3.5, height=5)
 png("./Figures/deltaDrivers.png", width=3.5, height=5, res=150, units="in")
-par(mfrow=c(2,1), mar=c(2.5, 3, 0.5, 0.5), mgp=c(1.5, 0.5, 0), tcl=-0.15, ps=9, cex=1)
+par(mfrow=c(2,1), mar=c(1.5, 3, 0.5, 0.5), mgp=c(1.5, 0.5, 0), tcl=-0.15, ps=9, cex=1)
 
 
 # =========================
@@ -82,7 +82,7 @@ labloc.s <- rollapply(xvals.s, width=2, by=2, mean)
 
 plot(xvals.s, iceTobit.s[,"estimate"], ylim=it.ylim.s, col=c("blue","red"), pch=19, xaxt="n", xlab="", ylab="Suwa\nCoefficient")
 # text(labloc.s, y=it.ylim.l.s*1.4, unique(iceTobit.s[,"variable"]), xpd=TRUE)
-text(labloc.s, y=it.ylim.l.s*1.4, parse(text=XL.s), xpd=TRUE)
+text(labloc.s, y=it.ylim.l.s*1.25, parse(text=XL.s), xpd=TRUE)
 axis(side=1, at=labloc.s, labels=FALSE)
 abline(h=0, lty="dotted")
 text(1, 11.5, "A", font=2, cex=1)
@@ -123,7 +123,7 @@ labloc.t <- rollapply(xvals.t, width=2, by=2, mean)
 
 plot(xvals.t, iceTobit.t[,"estimate"], ylim=it.ylim.t, col=c("blue","red"), pch=19, xaxt="n", xlab="", ylab="Torne\nCoefficient")
 # text(labloc.t, y=it.ylim.l.t*1.2, unique(iceTobit.t[,"variable"]), xpd=TRUE)
-text(labloc.t, y=it.ylim.l.t*1.125, parse(text=XL.t), xpd=TRUE)
+text(labloc.t, y=it.ylim.l.t*1.2, parse(text=XL.t), xpd=TRUE)
 axis(side=1, at=labloc.t, labels=FALSE)
 abline(h=0, lty="dotted")
 tornio.range1 <- paste0(min(tornio[tornio.bp.i,"year"]), " – ", max(tornio[tornio.bp.i,"year"]))
