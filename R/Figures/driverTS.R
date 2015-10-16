@@ -3,7 +3,7 @@
 # ==========
 # = Set WD =
 # ==========
-if(Sys.info()[["user"]]%in%c("ryanb","Battrd")){
+if(Sys.info()[["user"]]%in%c("ryanb","Battrd","battrd")){
 	setwd("/Users/Battrd/Documents/School&Work/WiscResearch/AncientIce") # for ryan
 }
 
@@ -140,22 +140,25 @@ plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lak
 }
 
 
-pdf("./Figures/transformedDrivers_IceDate.pdf")
+# pdf("./Figures/transformedDrivers_IceDate.pdf")
 
 # Suwa
 pred.names <- c("Kyoto Air T", "CO2", "ENSO")
 for(i in 1:length(suwa.preds)){
+	png(paste0("./Figures/transformedDrivers_IceDate_Suwa",i,"_",pred.names[i],".png", res=150, width=7, height=7, units="in"))
 	t.pred <- suwa.preds[i]
-	plot.driverIce(data = suwa, before.i = suwa.before.i, after.i = suwa.after.i, driver.col = t.pred, driver.name = pred.names[i], lake.name = "Lake Suwa", before.col = "blue", after.col = "red", model.type="tobit")
+	plot.driverIce(data = suwa, before.i = suwa.early.index, after.i = suwa.late.index, driver.col = t.pred, driver.name = pred.names[i], lake.name = "Lake Suwa", before.col = "blue", after.col = "red", model.type="tobit")
+	dev.off()
 }
 
 # Torne
 pred.names <- c("Stockholm Air T", "CO2", "NAO", "Sunspots")
 for(i in 1:length(tornio.preds)){
+	png(paste0("./Figures/transformedDrivers_IceDate_Torne",i,"_",pred.names[i],".png", res=150, width=7, height=7, units="in"))
 	t.pred <- tornio.preds[i]
 	plot.driverIce(data = tornio, before.i = tornio.bp.i, after.i = !tornio.bp.i, driver.col = t.pred, driver.name = pred.names[i], lake.name = "River Torne", before.col = "blue", after.col = "red", model.type="ols")
+	dev.off()
 }
 
-dev.off()
 
 
