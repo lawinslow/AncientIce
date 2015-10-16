@@ -87,7 +87,7 @@ plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lak
 	plot.dim <- matrix(c(0,0,1,1, 2,2,3,4, 5,5,6,7, 8,8,9,10), nrow=4, byrow=T)
 
 	layout(plot.dim)
-	par(mar=c(1.75,1.75,0.5,0.1), oma=c(0.1, 0.1, 0.1, 0.1), cex=1, ps=8, mgp=c(0.75,0.05,0), tcl=-0.1)
+	par(mar=c(1.75,1.75,0.5,0.1), oma=c(0.1, 0.1, 0.1, 0.1), cex=1, ps=6, mgp=c(0.75,0.05,0), tcl=-0.1)
 
 	# get before and after years
 	before.years <- data[before.i, c("year")]
@@ -133,10 +133,10 @@ plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lak
 	driver.before.detrend.scale <- scale(driver.before.detrend)
 	driver.after.detrend.scale <- scale(driver.after.detrend)
 	driver.detrend.scale <- c(driver.before.detrend.scale, driver.after.detrend.scale)
-	plot.befAft.ts(driver.before.detrend.scale, driver.after.detrend.scale, ylab="Detrended and Scaled Driver")
+	plot.befAft.ts(driver.before.detrend.scale, driver.after.detrend.scale, ylab="Detrd. & Scaled Driver")
 
 	# Plot Detrended Ice Date vs Detended and Scaled Driver
-	plot.doubleScatter(driver.before.detrend.scale, before.doy.detrend, driver.after.detrend.scale, after.doy.detrend, ylab="Detrended Ice Date", xlab="Detrended and Scaled Driver")
+	plot.doubleScatter(driver.before.detrend.scale, before.doy.detrend, driver.after.detrend.scale, after.doy.detrend, ylab="Detrended Ice Date", xlab="Detrd. & Scaled Driver")
 }
 
 
@@ -145,7 +145,7 @@ plot.driverIce <- function(data, before.i, after.i, driver.col, driver.name, lak
 # Suwa
 pred.names <- c("Kyoto Air T", "CO2", "ENSO")
 for(i in 1:length(suwa.preds)){
-	png(paste0("./Figures/transformedDrivers_IceDate_Suwa",i,"_",pred.names[i],".png", res=150, width=7, height=7, units="in"))
+	png(paste0("./Figures/transformedDrivers_IceDate_Suwa",i,"_",pred.names[i],".png"), res=200, width=5, height=5, units="in")
 	t.pred <- suwa.preds[i]
 	plot.driverIce(data = suwa, before.i = suwa.early.index, after.i = suwa.late.index, driver.col = t.pred, driver.name = pred.names[i], lake.name = "Lake Suwa", before.col = "blue", after.col = "red", model.type="tobit")
 	dev.off()
@@ -154,7 +154,7 @@ for(i in 1:length(suwa.preds)){
 # Torne
 pred.names <- c("Stockholm Air T", "CO2", "NAO", "Sunspots")
 for(i in 1:length(tornio.preds)){
-	png(paste0("./Figures/transformedDrivers_IceDate_Torne",i,"_",pred.names[i],".png", res=150, width=7, height=7, units="in"))
+	png(paste0("./Figures/transformedDrivers_IceDate_Torne",i,"_",pred.names[i],".png"), res=200, width=5, height=5, units="in")
 	t.pred <- tornio.preds[i]
 	plot.driverIce(data = tornio, before.i = tornio.bp.i, after.i = !tornio.bp.i, driver.col = t.pred, driver.name = pred.names[i], lake.name = "River Torne", before.col = "blue", after.col = "red", model.type="ols")
 	dev.off()
