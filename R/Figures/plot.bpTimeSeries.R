@@ -34,7 +34,9 @@ tornio[,"bp.pred"] <- as.numeric(predict(tt.year, newdata=tornio))
 # = Plot Time Series Overlain w/ BP Predictions =
 # ===============================================
 
-png("./Figures/timeSeriesBP.png", width=3.5, height=5, res=150, units="in")
+# png("./Figures/timeSeriesBP.png", width=3.5, height=5, res=150, units="in")
+# tiff("./Figures/timeSeriesBP.tiff", width=3.5, height=5, res=600, units="in", compression = "lzw")
+pdf("./Figures/timeSeriesBP.pdf", width=3.5, height=5)
 par(mfrow=c(2,1), mar=c(2, 2.25, 0.25, 0.1), oma=c(0.5, 0, 0, 0), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=9, cex=1)
 
 plot.suwaFit <- function(ci){

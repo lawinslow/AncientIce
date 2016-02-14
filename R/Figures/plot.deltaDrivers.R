@@ -49,7 +49,9 @@ invisible(sapply(paste(func.location, list.files(func.location), sep="/"), sourc
 # = plot tobit coefficients =
 # ===========================
 # dev.new(width=3.5, height=5)
-png("./Figures/deltaDrivers.png", width=3.5, height=5, res=150, units="in")
+# png("./Figures/deltaDrivers.png", width=3.5, height=5, res=150, units="in")
+# tiff("./Figures/deltaDrivers.tiff", width=3.5, height=5, res=600, units="in", compression = "lzw")
+pdf("./Figures/deltaDrivers.pdf", width=3.5, height=5)
 par(mfrow=c(2,1), mar=c(1.5, 3, 0.5, 0.5), mgp=c(1.5, 0.5, 0), tcl=-0.15, ps=9, cex=1)
 
 
